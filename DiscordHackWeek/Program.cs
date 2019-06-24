@@ -21,11 +21,8 @@ namespace DiscordHackWeek
                         LogLevel = LogSeverity.Info,
                         MessageCacheSize = 35
                     }));
-                    services.AddSingleton(new CommandService(new CommandServiceConfiguration
-                    {
-                        DefaultRunMode = RunMode.Parallel,
-                        CaseSensitive = false
-                    }));
+                    services.AddSingleton(new CommandService(new CommandServiceConfiguration 
+                        { DefaultRunMode = RunMode.Parallel }));
                 });
     }
 }
