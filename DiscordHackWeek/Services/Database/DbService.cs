@@ -1,4 +1,6 @@
-﻿using DiscordHackWeek.Services.Database.Tables;
+﻿using System;
+using DiscordHackWeek.Entities;
+using DiscordHackWeek.Services.Database.Tables;
 using Microsoft.EntityFrameworkCore;
 
 namespace DiscordHackWeek.Services.Database
@@ -14,6 +16,7 @@ namespace DiscordHackWeek.Services.Database
         public virtual DbSet<Zone> Zones { get; set; }
         public virtual DbSet<Item> Items { get; set; }
         public virtual DbSet<Inventory> Inventories { get; set; }
+        public virtual DbSet<Enemy> Enemies { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
@@ -23,6 +26,9 @@ namespace DiscordHackWeek.Services.Database
             {
                 x.HasKey(e => e.UserId);
                 x.Property(e => e.UserId).HasConversion<long>();
+                x.Property(e => e.AttackType).HasConversion(
+                    v => v.ToString(),
+                    v => (AttackType)Enum.Parse(typeof(AttackType), v));
             });
             modelBuilder.Entity<Dungeon>(x =>
             {
@@ -43,11 +49,22 @@ namespace DiscordHackWeek.Services.Database
             {
                 x.HasKey(e => e.Id);
                 x.Property(e => e.Id).ValueGeneratedOnAdd();
+                x.Property(e => e.ItemType).HasConversion(
+                    v => v.ToString(),
+                    v => (ItemType)Enum.Parse(typeof(ItemType), v));
             });
             modelBuilder.Entity<Inventory>(x =>
             {
                 x.HasKey(e => e.UserId);
                 x.Property(e => e.UserId).HasConversion<long>();
+            });
+            modelBuilder.Entity<Enemy>(x =>
+            {
+                x.HasKey(e => e.Id);
+                x.Property(e => e.Id).ValueGeneratedOnAdd();
+                x.Property(e => e.Type).HasConversion(
+                    v => v.ToString(),
+                    v => (EnemyType) Enum.Parse(typeof(EnemyType), v));
             });
         }
     }

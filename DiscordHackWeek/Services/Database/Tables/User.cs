@@ -1,4 +1,6 @@
-﻿namespace DiscordHackWeek.Services.Database.Tables
+﻿using DiscordHackWeek.Entities;
+
+namespace DiscordHackWeek.Services.Database.Tables
 {
     public class User
     {
@@ -6,6 +8,7 @@
         public int Level { get; set; }
         public int Exp { get; set; }
         public int TotalExp { get; set; }
+        public AttackType AttackType { get; set; }
         public int ContinentId { get; set; }
         public int ZoneId { get; set; }
         public int UnspentTalentPoints { get; set; }
