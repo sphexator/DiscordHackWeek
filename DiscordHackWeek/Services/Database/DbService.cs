@@ -24,7 +24,11 @@ namespace DiscordHackWeek.Services.Database
                 x.HasKey(e => e.UserId);
                 x.Property(e => e.UserId).HasConversion<long>();
             });
-            modelBuilder.Entity<Dungeon>(x => { });
+            modelBuilder.Entity<Dungeon>(x =>
+            {
+                x.HasKey(e => e.Id);
+                x.Property(e => e.Id).ValueGeneratedOnAdd();
+            });
             modelBuilder.Entity<Continent>(x =>
             {
                 x.HasKey(e => e.Id);
