@@ -14,5 +14,8 @@ namespace DiscordHackWeek.Services.Database.Tables
         public int UnspentTalentPoints { get; set; }
         public int DamageTalent { get; set; }
         public int HealthTalent { get; set; }
+
+        public int WeaponId { get; set; }
+        public int ArmorId { get; set; }
     }
 }
