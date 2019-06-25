@@ -30,7 +30,7 @@ namespace DiscordHackWeek.Services.Database
             {
                 x.HasKey(e => e.UserId);
                 x.Property(e => e.UserId).HasConversion<long>();
-                x.Property(e => e.AttackType).HasConversion(
+                x.Property(e => e.AttackMode).HasConversion(
                     v => v.ToString(),
                     v => (AttackType)Enum.Parse(typeof(AttackType), v));
             });
