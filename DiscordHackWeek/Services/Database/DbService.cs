@@ -18,7 +18,11 @@ namespace DiscordHackWeek.Services.Database
         public virtual DbSet<Inventory> Inventories { get; set; }
         public virtual DbSet<Enemy> Enemies { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured) 
+                optionsBuilder.UseNpgsql("");
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -57,6 +61,7 @@ namespace DiscordHackWeek.Services.Database
             {
                 x.HasKey(e => e.UserId);
                 x.Property(e => e.UserId).HasConversion<long>();
+                x.HasOne(e => e.Item).WithMany(e => e.Users);
             });
             modelBuilder.Entity<Enemy>(x =>
             {

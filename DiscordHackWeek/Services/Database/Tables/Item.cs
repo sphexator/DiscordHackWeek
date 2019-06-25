@@ -1,4 +1,6 @@
-﻿using DiscordHackWeek.Entities;
+﻿using System.Collections;
+using System.Collections.Generic;
+using DiscordHackWeek.Entities;
 
 namespace DiscordHackWeek.Services.Database.Tables
 {
@@ -12,5 +14,6 @@ namespace DiscordHackWeek.Services.Database.Tables
         public int HealthIncrease { get; set; }
         public int DamageIncrease { get; set; }
         public int CritIncrease { get; set; }
+        public ICollection<Inventory> Users { get; set; }
     }
 }
