@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Discord;
 using DiscordHackWeek.Entities;
 using DiscordHackWeek.Entities.Combat;
+using DiscordHackWeek.Extensions;
 using DiscordHackWeek.Services.Database;
 using DiscordHackWeek.Services.Database.Tables;
 using Microsoft.Extensions.Caching.Memory;
@@ -20,28 +24,64 @@ namespace DiscordHackWeek.Services.Combat
 
         public async Task BattleAsync(User userData, Enemy enemyData, DbService db)
         {
-            var user = BuildCombatUserAsync(userData, db);
-            var enemy = BuildCombatUserAsync(enemyData, db);
-            var battle = true;
-            while (battle)
-            {
+            var user = await BuildCombatUserAsync(userData, db);
+            var enemy = await BuildCombatUserAsync(enemyData, db);
+            var winner = await CombatAsync(user, enemy); // TODO: Send the message and pass
+        }
 
-                battle = false;
+        private async Task<CombatUser> CombatAsync(IUserMessage msg, CombatUser user, CombatUser enemy)
+        {
+            var msgLog = new LinkedList<string>();
+            EmbedBuilder embed;
+            while (true)
+            {
+                // User always goes first
+                var usDmg = CalculateDamage(user);
+
+                enemy.DmgTaken += usDmg;
+                if (enemy.DmgTaken >= enemy.Health)
+                {
+                    UpdateBattleLog(msgLog, $"{user.Name} hit for {usDmg} damage and defeated {enemy.Name}");
+                    return user;
+                }
+                UpdateBattleLog(msgLog, $"{user.Name} hit {enemy.Name} for {usDmg} damage");
+                var enDmg = CalculateDamage(enemy);
+                user.DmgTaken += enDmg;
+                if (user.DmgTaken < user.Health)
+                {
+                    UpdateBattleLog(msgLog, $"{enemy.Name} hit {user.Name} for {enDmg} damage");
+                    embed = msg.Embeds.First().ToEmbedBuilder();
+                    embed.Description = msgLog.ListToString();
+                    await msg.ModifyAsync(x => x.Embed = embed.Build());
+                    await Task.Delay(2000);
+                    continue;
+                }
+                UpdateBattleLog(msgLog, $"{enemy.Name} hit for {enDmg} damage and defeated {user.Name}");
+                embed = msg.Embeds.First().ToEmbedBuilder();
+                embed.Description = msgLog.ListToString();
+                await msg.ModifyAsync(x => x.Embed = embed.Build());
+                return enemy;
             }
         }
 
         private int CalculateDamage(CombatUser user)
         {
             var critChance = _random.Next(100);
-            var dmg = 10 * user.AttackPower;
+            var dmg = 1 * user.AttackPower;
             if (critChance >= user.CriticalChance) dmg = Convert.ToInt32(dmg * 1.5);
 
             var lowDmg = dmg / 1.5;
             if (lowDmg <= 0) lowDmg = 5;
             var highDmg = dmg * 1.5;
-            if (lowDmg >= highDmg) highDmg = lowDmg + 10;
+            if (lowDmg >= highDmg) highDmg = lowDmg + 5;
 
             return _random.Next(Convert.ToInt32(lowDmg), Convert.ToInt32(highDmg));
+        }
+
+        private void UpdateBattleLog(LinkedList<string> log, string message)
+        {
+            if (log.Count == 6) log.RemoveLast();
+            log.AddFirst(message);
         }
 
         private async Task<CombatUser> BuildCombatUserAsync(User userData, DbService db)
@@ -50,6 +90,7 @@ namespace DiscordHackWeek.Services.Combat
             var armor = await db.Items.FindAsync(userData.ArmorId);
             var user = new CombatUser
             {
+                Name = "Wumpus",
                 Health = 10 * userData.Level + 10 * userData.HealthTalent + 10 * armor.HealthIncrease,
                 AttackPower = 1 * userData.Level + 10 * userData.DamageTalent + 10 * weapon.DamageIncrease +
                               10 * armor.DamageIncrease,
@@ -70,6 +111,7 @@ namespace DiscordHackWeek.Services.Combat
         {
             var enemy = new CombatUser
             {
+                Name = enemyData.Name,
                 Health = 15 * enemyData.Level,
                 AttackPower = 1 * enemyData.Level,
                 DmgTaken = 0,

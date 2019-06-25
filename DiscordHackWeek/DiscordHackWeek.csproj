@@ -25,6 +25,5 @@
 
   <ItemGroup>
     <Folder Include="Modules\" />
-    <Folder Include="Extensions\" />
   </ItemGroup>
 </Project>
