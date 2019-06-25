@@ -1,4 +1,5 @@
 ﻿using DiscordHackWeek.Entities;
+using DiscordHackWeek.Entities.Combat;
 
 namespace DiscordHackWeek.Services.Database.Tables
 {

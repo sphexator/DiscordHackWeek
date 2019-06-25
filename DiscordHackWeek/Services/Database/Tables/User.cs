@@ -1,21 +1,21 @@
-﻿using DiscordHackWeek.Entities;
+﻿using DiscordHackWeek.Entities.Combat;
 
 namespace DiscordHackWeek.Services.Database.Tables
 {
     public class User
     {
         public ulong UserId { get; set; }
-        public int Level { get; set; }
-        public int Exp { get; set; }
-        public int TotalExp { get; set; }
-        public AttackType AttackMode { get; set; }
-        public int ContinentId { get; set; }
-        public int ZoneId { get; set; }
-        public int UnspentTalentPoints { get; set; }
-        public int DamageTalent { get; set; }
-        public int HealthTalent { get; set; }
+        public int Level { get; set; } = 1;
+        public int Exp { get; set; } = 0;
+        public int TotalExp { get; set; } = 0;
+        public AttackType AttackMode { get; set; } = AttackType.Passive;
+        public int ContinentId { get; set; } = 1;
+        public int ZoneId { get; set; } = 1;
+        public int UnspentTalentPoints { get; set; } = 0;
+        public int DamageTalent { get; set; } = 0;
+        public int HealthTalent { get; set; } = 0;
 
-        public int WeaponId { get; set; }
-        public int ArmorId { get; set; }
+        public int WeaponId { get; set; } = 1;
+        public int ArmorId { get; set; } = 2;
     }
 }

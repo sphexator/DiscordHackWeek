@@ -1,5 +1,6 @@
 ﻿using System;
 using DiscordHackWeek.Entities;
+using DiscordHackWeek.Entities.Combat;
 using DiscordHackWeek.Services.Database.Tables;
 using Microsoft.EntityFrameworkCore;
 

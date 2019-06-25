@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using DiscordHackWeek.Entities;
+using DiscordHackWeek.Entities.Command;
 using Qmmands;
 
 namespace DiscordHackWeek.Services
