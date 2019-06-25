@@ -62,7 +62,7 @@ namespace DiscordHackWeek.Services.Database
             {
                 x.HasKey(e => e.UserId);
                 x.Property(e => e.UserId).HasConversion<long>();
-                x.HasOne(e => e.Item).WithMany(e => e.Users);
+                x.HasOne(e => e.Item).WithMany(e => e.UserInventories);
             });
             modelBuilder.Entity<Enemy>(x =>
             {
@@ -71,6 +71,16 @@ namespace DiscordHackWeek.Services.Database
                 x.Property(e => e.Type).HasConversion(
                     v => v.ToString(),
                     v => (EnemyType) Enum.Parse(typeof(EnemyType), v));
+            });
+            modelBuilder.Entity<LootTable>(x =>
+            {
+                x.HasKey(e => new {e.EnemyId, e.ItemId}); 
+                x.HasOne(bc => bc.Enemy)
+                    .WithMany(b => b.Loot)
+                    .HasForeignKey(bc => bc.EnemyId);
+                x.HasOne(bc => bc.Item)
+                    .WithMany(c => c.LootTable)
+                    .HasForeignKey(bc => bc.ItemId);
             });
         }
     }

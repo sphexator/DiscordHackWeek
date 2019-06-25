@@ -1,4 +1,4 @@
-﻿using DiscordHackWeek.Entities;
+﻿using System.Collections.Generic;
 using DiscordHackWeek.Entities.Combat;
 
 namespace DiscordHackWeek.Services.Database.Tables
@@ -12,6 +12,8 @@ namespace DiscordHackWeek.Services.Database.Tables
         public string LightAttack { get; set; }
         public string HeavyAttack { get; set; }
 
+        public int Exp { get; set; }
+        public ICollection<LootTable> Loot { get; set; }
         public int? WeaponId { get; set; }
         public int? ArmorId { get; set; }
     }
