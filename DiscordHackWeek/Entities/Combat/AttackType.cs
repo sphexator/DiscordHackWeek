@@ -1,4 +1,4 @@
-﻿namespace DiscordHackWeek.Entities
+﻿namespace DiscordHackWeek.Entities.Combat
 {
     public enum AttackType
     {
