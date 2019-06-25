@@ -11,5 +11,8 @@ namespace DiscordHackWeek.Services.Database.Tables
         public int Level { get; set; }
         public string LightAttack { get; set; }
         public string HeavyAttack { get; set; }
+
+        public int? WeaponId { get; set; }
+        public int? ArmorId { get; set; }
     }
 }
