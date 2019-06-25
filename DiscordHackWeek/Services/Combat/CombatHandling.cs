@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Discord;
 using DiscordHackWeek.Entities;
 using DiscordHackWeek.Entities.Combat;
+using DiscordHackWeek.Entities.Command;
 using DiscordHackWeek.Extensions;
 using DiscordHackWeek.Services.Database;
 using DiscordHackWeek.Services.Database.Tables;
@@ -22,16 +23,18 @@ namespace DiscordHackWeek.Services.Combat
 
         public CombatHandling(Random random) => _random = random;
 
-        public async Task BattleAsync(User userData, Enemy enemyData, DbService db)
+        public async Task BattleAsync(SocketCommandContext context, User userData, Enemy enemyData, DbService db)
         {
             var user = await BuildCombatUserAsync(userData, db);
             var enemy = await BuildCombatUserAsync(enemyData, db);
-            var winner = await CombatAsync(user, enemy); // TODO: Send the message and pass
+            var msgLog = new LinkedList<string>();
+            msgLog.AddFirst($"{user.Name} VS {enemy.Name}");
+            var msg = await context.ReplyAsync(msgLog.ListToString());
+            var winner = await CombatAsync(msg, user, enemy, msgLog);
         }
 
-        private async Task<CombatUser> CombatAsync(IUserMessage msg, CombatUser user, CombatUser enemy)
+        private async Task<CombatUser> CombatAsync(IUserMessage msg, CombatUser user, CombatUser enemy, LinkedList<string> msgLog)
         {
-            var msgLog = new LinkedList<string>();
             EmbedBuilder embed;
             while (true)
             {
@@ -42,6 +45,10 @@ namespace DiscordHackWeek.Services.Combat
                 if (enemy.DmgTaken >= enemy.Health)
                 {
                     UpdateBattleLog(msgLog, $"{user.Name} hit for {usDmg} damage and defeated {enemy.Name}");
+                    embed = msg.Embeds.First().ToEmbedBuilder();
+                    embed.Description = msgLog.ListToString();
+                    await msg.ModifyAsync(x => x.Embed = embed.Build());
+                    await Task.Delay(2000);
                     return user;
                 }
                 UpdateBattleLog(msgLog, $"{user.Name} hit {enemy.Name} for {usDmg} damage");
@@ -57,9 +64,12 @@ namespace DiscordHackWeek.Services.Combat
                     continue;
                 }
                 UpdateBattleLog(msgLog, $"{enemy.Name} hit for {enDmg} damage and defeated {user.Name}");
+                UpdateBattleLog(msgLog, "You died :(");
                 embed = msg.Embeds.First().ToEmbedBuilder();
                 embed.Description = msgLog.ListToString();
+                embed.Color = Color.Red;
                 await msg.ModifyAsync(x => x.Embed = embed.Build());
+                await Task.Delay(2000);
                 return enemy;
             }
         }
