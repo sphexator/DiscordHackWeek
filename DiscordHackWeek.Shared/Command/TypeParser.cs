@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Qmmands;
 
-namespace DiscordHackWeek.Entities.Command
+namespace DiscordHackWeek.Shared.Command
 {
     public abstract class TypeParser<T> : Qmmands.TypeParser<T>
     {

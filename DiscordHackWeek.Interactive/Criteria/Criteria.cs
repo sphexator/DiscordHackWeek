@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using DiscordHackWeek.Entities.Command;
+using DiscordHackWeek.Shared.Command;
 
 namespace DiscordHackWeek.Interactive.Criteria
 {

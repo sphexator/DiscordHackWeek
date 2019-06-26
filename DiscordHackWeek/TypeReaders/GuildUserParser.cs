@@ -4,12 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using DiscordHackWeek.Entities.Command;
+using DiscordHackWeek.Shared.Command;
 using Qmmands;
 
 namespace DiscordHackWeek.TypeReaders
 {
-    public class GuildUserParser : Entities.Command.TypeParser<SocketGuildUser>
+    public class GuildUserParser : Shared.Command.TypeParser<SocketGuildUser>
     {
         public override ValueTask<TypeParserResult<SocketGuildUser>> ParseAsync(Parameter parameter, string value,
     SocketCommandContext context, IServiceProvider provider)

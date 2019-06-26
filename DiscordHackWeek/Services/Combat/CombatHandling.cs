@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Discord;
 using DiscordHackWeek.Entities;
 using DiscordHackWeek.Entities.Combat;
-using DiscordHackWeek.Entities.Command;
 using DiscordHackWeek.Extensions;
 using DiscordHackWeek.Services.Database;
 using DiscordHackWeek.Services.Database.Tables;
+using DiscordHackWeek.Shared.Command;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace DiscordHackWeek.Services.Combat

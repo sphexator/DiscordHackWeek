@@ -6,12 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using DiscordHackWeek.Entities.Command;
+using DiscordHackWeek.Shared.Command;
 using Qmmands;
 
 namespace DiscordHackWeek.TypeReaders
 {
-    public class RoleParser : Entities.Command.TypeParser<SocketRole>
+    public class RoleParser : Shared.Command.TypeParser<SocketRole>
     {
         public override ValueTask<TypeParserResult<SocketRole>> ParseAsync(Parameter parameter, string value,
             SocketCommandContext context, IServiceProvider provider)

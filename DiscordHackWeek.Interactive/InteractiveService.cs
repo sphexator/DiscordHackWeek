@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using DiscordHackWeek.Entities.Command;
+using DiscordHackWeek.Shared.Command;
 using DiscordHackWeek.Interactive.Callbacks;
 using DiscordHackWeek.Interactive.Criteria;
 using DiscordHackWeek.Interactive.Paginator;

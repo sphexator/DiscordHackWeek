@@ -3,7 +3,7 @@ using Discord;
 using Discord.WebSocket;
 using Qmmands;
 
-namespace DiscordHackWeek.Entities.Command
+namespace DiscordHackWeek.Shared.Command
 {
     public class SocketCommandContext : CommandContext
     {

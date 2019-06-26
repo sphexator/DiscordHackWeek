@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Qmmands;
 
-namespace DiscordHackWeek.Entities.Command
+namespace DiscordHackWeek.Shared.Command
 {
     public abstract class PreconditionAttribute : CheckAttribute
     {

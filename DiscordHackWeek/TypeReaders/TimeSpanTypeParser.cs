@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
-using DiscordHackWeek.Entities.Command;
+using DiscordHackWeek.Shared.Command;
 using Qmmands;
 
 namespace DiscordHackWeek.TypeReaders
 {
-    public class TimeSpanTypeParser : Entities.Command.TypeParser<TimeSpan>
+    public class TimeSpanTypeParser : Shared.Command.TypeParser<TimeSpan>
     {
         private static readonly string[] Formats =
         {
