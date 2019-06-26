@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DiscordHackWeek.Interactive\DiscordHackWeek.Interactive.csproj" />
     <ProjectReference Include="..\DiscordHackWeek.Shared\DiscordHackWeek.Shared.csproj" />
   </ItemGroup>
 </Project>
