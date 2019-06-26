@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordHackWeek", "DiscordHackWeek\DiscordHackWeek.csproj", "{A9F41F93-6DAB-4CB0-B18A-63CE09BBA4E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordHackWeek", "DiscordHackWeek\DiscordHackWeek.csproj", "{A9F41F93-6DAB-4CB0-B18A-63CE09BBA4E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordHackWeek.Interactive", "DiscordHackWeek.Interactive\DiscordHackWeek.Interactive.csproj", "{FEACC855-F3B9-4582-85CF-E906AA6B9DF2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{A9F41F93-6DAB-4CB0-B18A-63CE09BBA4E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9F41F93-6DAB-4CB0-B18A-63CE09BBA4E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9F41F93-6DAB-4CB0-B18A-63CE09BBA4E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEACC855-F3B9-4582-85CF-E906AA6B9DF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEACC855-F3B9-4582-85CF-E906AA6B9DF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEACC855-F3B9-4582-85CF-E906AA6B9DF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEACC855-F3B9-4582-85CF-E906AA6B9DF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
