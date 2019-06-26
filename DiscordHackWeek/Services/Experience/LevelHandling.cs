@@ -8,7 +8,7 @@ namespace DiscordHackWeek.Services.Experience
     {
         public int ExpToNextLevel(int level) => 10 * level * level + 200;
 
-        public async Task AddExp(int exp, User user)
+        public async Task AddExpAsync(int exp, User user)
         {
             if (user.Exp + exp >= ExpToNextLevel(user.Level))
             {
@@ -21,9 +21,9 @@ namespace DiscordHackWeek.Services.Experience
             user.TotalExp += exp;
         }
 
-        public async Task AddExpAndCredit(int exp, int credit, User user)
+        public async Task AddExpAndCreditAsync(int exp, int credit, User user)
         {
-            await AddExp(exp, user);
+            await AddExpAsync(exp, user);
             user.Credit += credit;
         }
     }
