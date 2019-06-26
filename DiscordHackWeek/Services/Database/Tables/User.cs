@@ -8,6 +8,7 @@ namespace DiscordHackWeek.Services.Database.Tables
         public int Level { get; set; } = 1;
         public int Exp { get; set; } = 0;
         public int TotalExp { get; set; } = 0;
+        public int Credit { get; set; } = 0;
         public AttackType AttackMode { get; set; } = AttackType.Passive;
         public int ContinentId { get; set; } = 1;
         public int ZoneId { get; set; } = 1;

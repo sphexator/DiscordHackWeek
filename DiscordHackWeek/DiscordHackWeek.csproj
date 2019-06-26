@@ -24,10 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Modules\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\DiscordHackWeek.Interactive\DiscordHackWeek.Interactive.csproj" />
     <ProjectReference Include="..\DiscordHackWeek.Shared\DiscordHackWeek.Shared.csproj" />
   </ItemGroup>
