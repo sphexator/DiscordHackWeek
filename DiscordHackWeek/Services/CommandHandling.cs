@@ -7,7 +7,7 @@ using Qmmands;
 
 namespace DiscordHackWeek.Services
 {
-    public class CommandHandling
+    public class CommandHandling : INService, IRequired
     {
         private readonly DiscordSocketClient _client;
         private readonly CommandService _command;
