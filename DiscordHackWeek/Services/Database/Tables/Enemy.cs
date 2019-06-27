@@ -10,7 +10,6 @@ namespace DiscordHackWeek.Services.Database.Tables
         public int ZoneId { get; set; }
         public string Image { get; set; }
         public EnemyType Type { get; set; }
-        public int Level { get; set; }
         public string LightAttack { get; set; }
         public string HeavyAttack { get; set; }
 
