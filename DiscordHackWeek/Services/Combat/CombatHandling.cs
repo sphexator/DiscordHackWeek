@@ -3,55 +3,147 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.WebSocket;
 using DiscordHackWeek.Entities;
 using DiscordHackWeek.Entities.Combat;
 using DiscordHackWeek.Extensions;
 using DiscordHackWeek.Services.Database;
 using DiscordHackWeek.Services.Database.Tables;
+using DiscordHackWeek.Services.Experience;
 using DiscordHackWeek.Shared.Command;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace DiscordHackWeek.Services.Combat
 {
     public class CombatHandling : INService
     {
+        private readonly LevelHandling _level;
         private readonly Random _random;
 
         public readonly MemoryCache Consumables
             = new MemoryCache(new MemoryCacheOptions
-                { ExpirationScanFrequency = TimeSpan.FromMinutes(1) });
+                {ExpirationScanFrequency = TimeSpan.FromMinutes(1)});
 
-        public CombatHandling(Random random) => _random = random;
+        public CombatHandling(Random random, LevelHandling level)
+        {
+            _random = random;
+            _level = level;
+        }
 
         public async Task BattleAsync(SocketCommandContext context, User userData, Enemy enemyData, DbService db)
         {
-            var user = await BuildCombatUserAsync(userData, db);
+            var user = await BuildCombatUserAsync(context.User, userData, db);
             var enemy = await BuildCombatUserAsync(enemyData, db);
+
             var msgLog = new LinkedList<string>();
             msgLog.AddFirst($"{user.Name} VS {enemy.Name}");
             var msg = await context.ReplyAsync(msgLog.ListToString());
-            var winner = await CombatAsync(msg, user, enemy, msgLog);
+            var inventory = await db.Inventories.Where(x => x.UserId == context.User.Id).ToListAsync();
+            var winner = await CombatAsync(msg, user, enemy, msgLog, inventory);
+            if (winner.Name == enemy.Name) return;
+            var exp = _level.AddExpAndCredit(enemyData.Exp + _random.Next(-10, 10), enemyData.Credit, userData,
+                out var response);
+            var embed = msg.Embeds.First().ToEmbedBuilder();
+            var update = false;
+            if (exp)
+            {
+                update = true;
+                embed.AddField("Exp", response);
+            }
+
+            if (enemyData.Loot.Count != 0)
+            {
+                update = true;
+                var loot = new List<Item>();
+                var lootResponse = "";
+                if (enemyData.Credit != 0) lootResponse += $"{enemyData.Credit} credit\n";
+                for (var i = 0; i < enemyData.DropAmount; i++)
+                {
+                    var item = enemyData.Loot.ElementAt(_random.Next(enemyData.Loot.Count)).Item;
+                    if (!loot.Contains(item))
+                    {
+                        loot.Add(item);
+                        lootResponse += $"{item.Name}\n";
+                        var invItem = inventory.FirstOrDefault(x => x.ItemId == item.Id);
+                        if (invItem != null)
+                        {
+                            if (!item.Unique) invItem.Amount++;
+                        }
+                        else
+                        {
+                            await db.Inventories.AddAsync(new Inventory
+                            {
+                                UserId = context.User.Id,
+                                ItemId = item.Id,
+                                Item = item,
+                                Amount = 1
+                            });
+                        }
+                    }
+                    else
+                    {
+                        i--;
+                    }
+                }
+
+                embed.AddField("Loot", lootResponse);
+            }
+
+            if (update) await msg.ModifyAsync(x => x.Embed = embed.Build());
+            await db.SaveChangesAsync();
         }
 
-        private async Task<CombatUser> CombatAsync(IUserMessage msg, CombatUser user, CombatUser enemy, LinkedList<string> msgLog)
+        private async Task<CombatUser> CombatAsync(IUserMessage msg, CombatUser user, CombatUser enemy, DbService db,
+            LinkedList<string> msgLog, List<Inventory> userInventory)
         {
             EmbedBuilder embed;
             while (true)
             {
                 // User always goes first
-                var usDmg = CalculateDamage(user);
-
-                enemy.DmgTaken += usDmg;
-                if (enemy.DmgTaken >= enemy.Health)
+                if (Convert.ToInt32(user.DmgTaken / user.Health * 100) >= 70
+                    && userInventory.Count(x => x.Item.ItemType == ItemType.Food && x.Item.ItemType == ItemType.Food) >
+                    0)
                 {
-                    UpdateBattleLog(msgLog, $"{user.Name} hit for {usDmg} damage and defeated {enemy.Name}");
-                    embed = msg.Embeds.First().ToEmbedBuilder();
-                    embed.Description = msgLog.ListToString();
-                    await msg.ModifyAsync(x => x.Embed = embed.Build());
-                    await Task.Delay(2000);
-                    return user;
+                    var potion = userInventory.FirstOrDefault(x =>
+                        x.Item.ItemType == ItemType.Potion && x.Item.HealthIncrease != 0);
+                    if (potion != null)
+                    {
+                        UpdateBattleLog(msgLog,
+                            $"{user.Name} drank a {potion.Item.Name} and regained {potion.Item.HealthIncrease} health!");
+                        user.DmgTaken -= potion.Item.HealthIncrease;
+                        if (potion.Amount == 1) db.Inventories.Remove(potion);
+                        else potion.Amount--;
+                    }
+                    else
+                    {
+                        var food = userInventory.FirstOrDefault(x =>
+                            x.Item.ItemType == ItemType.Food && x.Item.HealthIncrease != 0);
+                        UpdateBattleLog(msgLog,
+                            $"{user.Name} ate {food.Item.Name} and regained {food.Item.Name} health!");
+                        user.DmgTaken -= food.Item.HealthIncrease;
+                        if (food.Amount == 1) db.Inventories.Remove(food);
+                        else food.Amount--;
+                    }
                 }
-                UpdateBattleLog(msgLog, $"{user.Name} hit {enemy.Name} for {usDmg} damage");
+                else
+                {
+                    var usDmg = CalculateDamage(user);
+
+                    enemy.DmgTaken += usDmg;
+                    if (enemy.DmgTaken >= enemy.Health)
+                    {
+                        UpdateBattleLog(msgLog, $"{user.Name} hit for {usDmg} damage and defeated {enemy.Name}");
+                        embed = msg.Embeds.First().ToEmbedBuilder();
+                        embed.Description = msgLog.ListToString();
+                        await msg.ModifyAsync(x => x.Embed = embed.Build());
+                        await Task.Delay(2000);
+                        return user;
+                    }
+
+                    UpdateBattleLog(msgLog, $"{user.Name} hit {enemy.Name} for {usDmg} damage");
+                }
+
                 var enDmg = CalculateDamage(enemy);
                 user.DmgTaken += enDmg;
                 if (user.DmgTaken < user.Health)
@@ -63,6 +155,7 @@ namespace DiscordHackWeek.Services.Combat
                     await Task.Delay(2000);
                     continue;
                 }
+
                 UpdateBattleLog(msgLog, $"{enemy.Name} hit for {enDmg} damage and defeated {user.Name}");
                 UpdateBattleLog(msgLog, "You died :(");
                 embed = msg.Embeds.First().ToEmbedBuilder();
@@ -94,13 +187,13 @@ namespace DiscordHackWeek.Services.Combat
             log.AddFirst(message);
         }
 
-        private async Task<CombatUser> BuildCombatUserAsync(User userData, DbService db)
+        private async Task<CombatUser> BuildCombatUserAsync(SocketUser socketUser, User userData, DbService db)
         {
             var weapon = await db.Items.FindAsync(userData.WeaponId);
             var armor = await db.Items.FindAsync(userData.ArmorId);
             var user = new CombatUser
             {
-                Name = "Wumpus",
+                Name = socketUser.Username,
                 Health = 10 * userData.Level + 10 * userData.HealthTalent + 10 * armor.HealthIncrease,
                 AttackPower = 1 * userData.Level + 10 * userData.DamageTalent + 10 * weapon.DamageIncrease +
                               10 * armor.DamageIncrease,

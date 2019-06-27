@@ -35,21 +35,25 @@ namespace DiscordHackWeek.Services.Database
                     v => v.ToString(),
                     v => (AttackType)Enum.Parse(typeof(AttackType), v));
             });
+
             modelBuilder.Entity<Dungeon>(x =>
             {
                 x.HasKey(e => e.Id);
                 x.Property(e => e.Id).ValueGeneratedOnAdd();
             });
+
             modelBuilder.Entity<Continent>(x =>
             {
                 x.HasKey(e => e.Id);
                 x.Property(e => e.Id).ValueGeneratedOnAdd();
             });
+
             modelBuilder.Entity<Zone>(x =>
             {
                 x.HasKey(e => e.Id);
                 x.Property(e => e.Id).ValueGeneratedOnAdd();
             });
+
             modelBuilder.Entity<Item>(x =>
             {
                 x.HasKey(e => e.Id);
@@ -58,12 +62,14 @@ namespace DiscordHackWeek.Services.Database
                     v => v.ToString(),
                     v => (ItemType)Enum.Parse(typeof(ItemType), v));
             });
+
             modelBuilder.Entity<Inventory>(x =>
             {
-                x.HasKey(e => e.UserId);
+                x.HasKey(e => new { e.UserId, e.ItemId });
                 x.Property(e => e.UserId).HasConversion<long>();
                 x.HasOne(e => e.Item).WithMany(e => e.UserInventories);
             });
+
             modelBuilder.Entity<Enemy>(x =>
             {
                 x.HasKey(e => e.Id);
@@ -72,6 +78,7 @@ namespace DiscordHackWeek.Services.Database
                     v => v.ToString(),
                     v => (EnemyType) Enum.Parse(typeof(EnemyType), v));
             });
+
             modelBuilder.Entity<LootTable>(x =>
             {
                 x.HasKey(e => new {e.EnemyId, e.ItemId}); 

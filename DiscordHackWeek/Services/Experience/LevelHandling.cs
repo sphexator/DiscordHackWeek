@@ -8,23 +8,29 @@ namespace DiscordHackWeek.Services.Experience
     {
         public int ExpToNextLevel(int level) => 10 * level * level + 200;
 
-        public async Task AddExpAsync(int exp, User user)
+        public bool AddExpAndCredit(int exp, int credit, User user, out string response)
         {
-            if (user.Exp + exp >= ExpToNextLevel(user.Level))
+            if (user.Level != 30)
             {
-                user.Exp = user.Exp + exp - ExpToNextLevel(user.Level);
-                user.Level++;
+                if (user.Exp + exp >= ExpToNextLevel(user.Level))
+                {
+                    user.Exp = user.Exp + exp - ExpToNextLevel(user.Level);
+                    user.Level++;
 
-                if (user.Level % 2 == 0) user.UnspentTalentPoints++;
+                    if (user.Level % 2 == 0) user.UnspentTalentPoints++;
+
+                    response = $"gained {exp} and leveled up to {user.Level}!";
+                }
+                else
+                {
+                    user.Exp += exp;
+                    response = $"gained {exp}";
+                }
+                user.TotalExp += exp;
             }
-            else user.Exp += exp;
-            user.TotalExp += exp;
-        }
-
-        public async Task AddExpAndCreditAsync(int exp, int credit, User user)
-        {
-            await AddExpAsync(exp, user);
             user.Credit += credit;
+            response = null;
+            return user.Level != 30;
         }
     }
 }

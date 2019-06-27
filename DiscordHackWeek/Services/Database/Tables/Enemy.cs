@@ -7,12 +7,15 @@ namespace DiscordHackWeek.Services.Database.Tables
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string Image { get; set; }
         public EnemyType Type { get; set; }
         public int Level { get; set; }
         public string LightAttack { get; set; }
         public string HeavyAttack { get; set; }
 
-        public int Exp { get; set; }
+        public int Exp { get; set; } = 5;
+        public int Credit { get; set; } = 0;
+        public int DropAmount { get; set; } = 1;
         public ICollection<LootTable> Loot { get; set; }
         public int? WeaponId { get; set; }
         public int? ArmorId { get; set; }
