@@ -31,6 +31,20 @@ namespace DiscordHackWeek.Services.Combat
             _level = level;
         }
 
+        public async Task SearchAsync(SocketCommandContext context, DbService db)
+        {
+            var user = await db.Users.FindAsync(context.User.Id);
+            var enemies = await db.Enemies.Where(x => x.ZoneId == user.ZoneId).ToListAsync();
+            var found = _random.Next(100);
+            if (found >= 40)
+            {
+                var enemy = enemies[_random.Next(enemies.Count)];
+                await context.ReplyAsync($"{context.User.Mention} encountered a wild {enemy.Name}!", Color.Green.RawValue);
+                await BattleAsync(context, user, enemy, db);
+            }
+            else await context.ReplyAsync($"{context.User.Mention} searched around and found no one", Color.Red.RawValue);
+        }
+
         public async Task BattleAsync(SocketCommandContext context, User userData, Enemy enemyData, DbService db)
         {
             var user = await BuildCombatUserAsync(context.User, userData, db);
