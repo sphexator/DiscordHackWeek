@@ -19,10 +19,7 @@ namespace DiscordHackWeek.Modules
         [Name("Search")]
         [Description("")]
         [Command("search")]
-        public async Task PlayAsync()
-        {
-
-        }
+        public async Task PlayAsync() => await _combat.SearchAsync(Context, _db);
 
         [Name("GoTo")]
         [Description("")]

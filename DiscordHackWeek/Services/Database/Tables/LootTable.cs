@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DiscordHackWeek.Services.Database.Tables
+﻿namespace DiscordHackWeek.Services.Database.Tables
 {
     public class LootTable
     {
