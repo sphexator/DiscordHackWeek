@@ -47,8 +47,12 @@ namespace DiscordHackWeek.Services.Combat
 
         public async Task BattleAsync(SocketCommandContext context, User userData, Enemy enemyData, DbService db)
         {
+            var zone = await db.Zones.FirstOrDefaultAsync(x => x.Id == userData.ZoneId);
             var user = await BuildCombatUserAsync(context.User, userData, db);
-            var enemy = await BuildCombatUserAsync(enemyData, db);
+            int lvl;
+            if (userData.Level + 3 > zone.HighLevel) lvl = zone.HighLevel;
+            else lvl = userData.Level + 3;
+            var enemy = await BuildCombatUserAsync(enemyData, _random.Next(zone.LowLevel, lvl), db);
 
             var msgLog = new LinkedList<string>();
             msgLog.AddFirst($"{user.Name} VS {enemy.Name}");
@@ -66,15 +70,15 @@ namespace DiscordHackWeek.Services.Combat
                 embed.AddField("Exp", response);
             }
 
-            if (enemyData.Loot.Count != 0)
+            if (enemyData.LootTableIds.Count != 0)
             {
                 update = true;
                 var loot = new List<Item>();
                 var lootResponse = "";
                 if (enemyData.Credit != 0) lootResponse += $"{enemyData.Credit} credit\n";
-                for (var i = 0; i < enemyData.DropAmount; i++)
+                for (var i = 0; i < 3; i++)
                 {
-                    var item = enemyData.Loot.ElementAt(_random.Next(enemyData.Loot.Count)).Item;
+                    var item = await db.Items.FindAsync(enemyData.LootTableIds.ElementAt(_random.Next(enemyData.LootTableIds.Count)));
                     if (!loot.Contains(item))
                     {
                         loot.Add(item);
@@ -90,8 +94,8 @@ namespace DiscordHackWeek.Services.Combat
                             {
                                 UserId = context.User.Id,
                                 ItemId = item.Id,
-                                Item = item,
-                                Amount = 1
+                                Amount = 1,
+                                ItemType = item.ItemType
                             });
                         }
                     }
@@ -116,28 +120,33 @@ namespace DiscordHackWeek.Services.Combat
             {
                 // User always goes first
                 if (Convert.ToInt32(user.DmgTaken / user.Health * 100) >= 70
-                    && userInventory.Count(x => x.Item.ItemType == ItemType.Food && x.Item.ItemType == ItemType.Food) >
+                    && userInventory.Count(x => x.ItemType == ItemType.Food && x.ItemType == ItemType.Food) >
                     0)
                 {
-                    var potion = userInventory.FirstOrDefault(x =>
-                        x.Item.ItemType == ItemType.Potion && x.Item.HealthIncrease != 0);
-                    if (potion != null)
+                    var potionId = userInventory.FirstOrDefault(x =>
+                        x.ItemType == ItemType.Potion);
+                    if (potionId != null)
                     {
+                        var potion = await db.Items.FindAsync(potionId.ItemId);
                         UpdateBattleLog(msgLog,
-                            $"{user.Name} drank a {potion.Item.Name} and regained {potion.Item.HealthIncrease} health!");
-                        user.DmgTaken -= potion.Item.HealthIncrease;
-                        if (potion.Amount == 1) db.Inventories.Remove(potion);
-                        else potion.Amount--;
+                            $"{user.Name} drank a {potion.Name} and regained {potion.HealthIncrease} health!");
+                        user.DmgTaken -= potion.HealthIncrease;
+                        if (potionId.Amount == 1) db.Inventories.Remove(potionId);
+                        else potionId.Amount--;
                     }
                     else
                     {
-                        var food = userInventory.FirstOrDefault(x =>
-                            x.Item.ItemType == ItemType.Food && x.Item.HealthIncrease != 0);
-                        UpdateBattleLog(msgLog,
-                            $"{user.Name} ate {food.Item.Name} and regained {food.Item.Name} health!");
-                        user.DmgTaken -= food.Item.HealthIncrease;
-                        if (food.Amount == 1) db.Inventories.Remove(food);
-                        else food.Amount--;
+                        var foodId = userInventory.FirstOrDefault(x =>
+                            x.ItemType == ItemType.Food);
+                        if (foodId != null)
+                        {
+                            var food = await db.Items.FindAsync(foodId.ItemId);
+                            UpdateBattleLog(msgLog,
+                                $"{user.Name} ate {food.Name} and regained {food.Name} health!");
+                            user.DmgTaken -= food.HealthIncrease;
+                            if (foodId.Amount == 1) db.Inventories.Remove(foodId);
+                            else foodId.Amount--;
+                        }
                     }
                 }
                 else
@@ -224,13 +233,13 @@ namespace DiscordHackWeek.Services.Combat
             return user;
         }
 
-        private async Task<CombatUser> BuildCombatUserAsync(Enemy enemyData, DbService db)
+        private async Task<CombatUser> BuildCombatUserAsync(Enemy enemyData, int level, DbService db)
         {
             var enemy = new CombatUser
             {
                 Name = enemyData.Name,
-                Health = 15 * enemyData.Level,
-                AttackPower = 1 * enemyData.Level,
+                Health = 15 * level,
+                AttackPower = 1 * level,
                 DmgTaken = 0,
                 CriticalChance = 10
             };

@@ -334,6 +334,9 @@ namespace DiscordHackWeek.Services.Database
             {
                 x.HasKey(e => new { e.UserId, e.ItemId });
                 x.Property(e => e.UserId).HasConversion<long>();
+                x.Property(e => e.ItemType).HasConversion(
+                    v => v.ToString(),
+                    v => (ItemType)Enum.Parse(typeof(ItemType), v));
                 // x.HasOne(e => e.Item).WithMany(e => e.UserInventories);
             });
 
