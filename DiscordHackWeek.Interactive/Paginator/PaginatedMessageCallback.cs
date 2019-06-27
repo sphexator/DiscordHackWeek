@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -140,6 +141,20 @@ namespace DiscordHackWeek.Interactive.Paginator
 
         protected Embed BuildEmbed()
         {
+            var embed = new EmbedBuilder();
+            embed.WithAuthor(_pager.Author);
+            embed.WithColor(_pager.Color);
+            if (_pager.Pages is IEnumerable<ImagePager> imgPages)
+            {
+                var index = imgPages.ElementAt(page - 1);
+                embed.WithDescription(index.Content);
+                embed.WithImageUrl(index.Image);
+            }
+            else embed.WithFooter(f => f.Text = string.Format(options.FooterFormat, page, pages));
+            embed.WithFooter(f => f.Text = string.Format(options.FooterFormat, page, pages));
+            embed.WithTitle(_pager.Title);
+            return embed.Build();
+            /*
             return new EmbedBuilder()
                 .WithAuthor(_pager.Author)
                 .WithColor(_pager.Color)
@@ -147,6 +162,7 @@ namespace DiscordHackWeek.Interactive.Paginator
                 .WithFooter(f => f.Text = string.Format(options.FooterFormat, page, pages))
                 .WithTitle(_pager.Title)
                 .Build();
+                */
         }
 
         private async Task RenderAsync()
