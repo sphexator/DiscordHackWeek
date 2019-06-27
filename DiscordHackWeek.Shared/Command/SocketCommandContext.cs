@@ -11,14 +11,14 @@ namespace DiscordHackWeek.Shared.Command
         {
             Client = client;
             Message = msg;
-            User = user;
+            User = user as SocketGuildUser;
             Guild = (user as SocketGuildUser)?.Guild;
             Channel = msg.Channel;
         }
 
         public SocketUserMessage Message { get; }
         public DiscordSocketClient Client { get; }
-        public SocketUser User { get; }
+        public SocketGuildUser User { get; }
         public SocketGuild Guild { get; }
         public ISocketMessageChannel Channel { get; }
 
