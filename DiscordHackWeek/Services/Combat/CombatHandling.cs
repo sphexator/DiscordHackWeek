@@ -40,7 +40,7 @@ namespace DiscordHackWeek.Services.Combat
             msgLog.AddFirst($"{user.Name} VS {enemy.Name}");
             var msg = await context.ReplyAsync(msgLog.ListToString());
             var inventory = await db.Inventories.Where(x => x.UserId == context.User.Id).ToListAsync();
-            var winner = await CombatAsync(msg, user, enemy, msgLog, inventory);
+            var winner = await CombatAsync(msg, user, enemy, db, msgLog, inventory);
             if (winner.Name == enemy.Name) return;
             var exp = _level.AddExpAndCredit(enemyData.Exp + _random.Next(-10, 10), enemyData.Credit, userData,
                 out var response);
