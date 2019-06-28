@@ -65,10 +65,9 @@ namespace DiscordHackWeek.Services.Combat
 
         public async Task SearchAsync(SocketCommandContext context, DbService db)
         {
-            var user = await db.Users.FindAsync(context.User.Id);
-            bool newUser = false;
-            if (user == null) user = await StartAsync(context, db);
-            
+            var user = await db.Users.FindAsync(context.User.Id) 
+                       ?? await StartAsync(context, db);
+
             var enemies = await db.Enemies.Where(x => x.ZoneId == user.ZoneId).ToListAsync();
             var found = _random.Next(100);
             if (found >= 40)
@@ -252,7 +251,7 @@ namespace DiscordHackWeek.Services.Combat
             log.AddFirst(message);
         }
 
-        private async Task<CombatUser> BuildCombatUserAsync(SocketUser socketUser, User userData, DbService db)
+        public async Task<CombatUser> BuildCombatUserAsync(SocketUser socketUser, User userData, DbService db)
         {
             var weapon = await db.Items.FindAsync(userData.WeaponId);
             var armor = await db.Items.FindAsync(userData.ArmorId);

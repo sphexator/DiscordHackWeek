@@ -3,9 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using DiscordHackWeek.Entities.Combat;
 using DiscordHackWeek.Extensions;
 using DiscordHackWeek.Interactive;
 using DiscordHackWeek.Interactive.Paginator;
+using DiscordHackWeek.Services;
 using DiscordHackWeek.Services.Combat;
 using DiscordHackWeek.Services.Database;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +19,12 @@ namespace DiscordHackWeek.Modules
     public class GameModule : InteractiveBase
     {
         private readonly CombatHandling _combat;
-        public GameModule(CombatHandling combat) => _combat = combat;
+        private readonly ImageHandling _image;
+        public GameModule(CombatHandling combat, ImageHandling image)
+        {
+            _combat = combat;
+            _image = image;
+        }
 
         [Name("Search")]
         [Description("")]
@@ -102,7 +109,14 @@ namespace DiscordHackWeek.Modules
         [Command("Profile")]
         public async Task ProfileAsync(SocketGuildUser user = null)
         {
+            using var db = new DbService();
             if (user == null) user = Context.User;
+            var userData = await db.Users.FindAsync(Context.User.Id);
+            if (user == null) return;
+            await Context.Channel.TriggerTypingAsync();
+            var img = await _image.ProfileBuilder(user, userData, await _combat.BuildCombatUserAsync(user, userData, db), db);
+            img.Position = 0;
+            await Context.Channel.SendFileAsync(img, "Profile.png");
         }
 
         [Name("Inventory")]
