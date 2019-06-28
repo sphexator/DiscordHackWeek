@@ -11,10 +11,13 @@ namespace DiscordHackWeek.Services
     {
         private readonly DiscordSocketClient _client;
         private readonly CommandService _command;
-        public CommandHandling(DiscordSocketClient client, CommandService command)
+        private readonly IServiceProvider _provider;
+
+        public CommandHandling(DiscordSocketClient client, CommandService command, IServiceProvider provider)
         {
             _client = client;
             _command = command;
+            _provider = provider;
 
             _client.MessageReceived += message =>
             {
@@ -29,7 +32,7 @@ namespace DiscordHackWeek.Services
             if (msg.Author.IsBot) return;
             if (!CommandUtilities.HasPrefix(msg.Content, "-", StringComparison.CurrentCultureIgnoreCase,
                 out var output)) return;
-            await _command.ExecuteAsync(output, new SocketCommandContext(_client, msg, msg.Author));
+            await _command.ExecuteAsync(output, new SocketCommandContext(_client, msg, msg.Author), _provider);
         }
     }
 }
