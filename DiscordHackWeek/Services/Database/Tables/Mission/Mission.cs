@@ -6,6 +6,7 @@ namespace DiscordHackWeek.Services.Database.Tables.Mission
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public int LevelRequirement { get; set; }
         public TimeSpan Duration { get; set; }
         public int CreditReward { get; set; } = 0;
         public int ExpReward { get; set; }

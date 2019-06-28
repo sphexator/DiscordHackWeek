@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DiscordHackWeek.Services.Database.Tables.Mission
 {
@@ -9,6 +7,7 @@ namespace DiscordHackWeek.Services.Database.Tables.Mission
         public ulong UserId { get; set; }
         public int MissionId { get; set; }
         public int SuccessChance { get; set; }
+        public bool Success { get; set; }
         public DateTimeOffset Started { get; set; }
     }
 }

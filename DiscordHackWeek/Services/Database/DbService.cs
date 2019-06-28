@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using DiscordHackWeek.Entities;
 using DiscordHackWeek.Entities.Combat;
 using DiscordHackWeek.Services.Database.Tables;
+using DiscordHackWeek.Services.Database.Tables.Mission;
+using DiscordHackWeek.Services.Database.Tables.Objective;
 using Microsoft.EntityFrameworkCore;
 
 namespace DiscordHackWeek.Services.Database
@@ -19,6 +22,14 @@ namespace DiscordHackWeek.Services.Database
         public virtual DbSet<Item> Items { get; set; }
         public virtual DbSet<Inventory> Inventories { get; set; }
         public virtual DbSet<Enemy> Enemies { get; set; }
+
+        public virtual DbSet<Mission> Missions { get; set; }
+        public virtual DbSet<MissionCompleted> MissionCompleted { get; set; }
+        public virtual DbSet<MissionProgress> MissionProgress { get; set; }
+
+        public virtual DbSet<Quest> Quests { get; set; }
+        public virtual DbSet<CompletedQuest> CompletedQuests { get; set; }
+        public virtual DbSet<ActiveQuest> ActiveQuests { get; set; }
 
         public virtual DbSet<GuildConfig> GuildConfigs { get; set; }
         public virtual DbSet<IgnoreChannel> IgnoreChannels { get; set; }
@@ -356,7 +367,6 @@ namespace DiscordHackWeek.Services.Database
                 x.Property(e => e.ItemType).HasConversion(
                     v => v.ToString(),
                     v => (ItemType)Enum.Parse(typeof(ItemType), v));
-                // x.HasOne(e => e.Item).WithMany(e => e.UserInventories);
             });
 
             modelBuilder.Entity<Enemy>(x =>
@@ -502,6 +512,255 @@ namespace DiscordHackWeek.Services.Database
                 });
             });
 
+            modelBuilder.Entity<Mission>(x =>
+            {
+                x.HasKey(e => e.Id);
+                x.HasData(new List<Mission>
+                {
+                    new Mission
+                    {
+                        Id = 1,
+                        Name = "Patrol",
+                        LevelRequirement = 1,
+                        ActiveSince = DateTimeOffset.UtcNow,
+                        Active = false,
+                        CreditReward = 10,
+                        ExpReward = 100,
+                        ActiveSpan = TimeSpan.FromHours(6),
+                        Duration = TimeSpan.FromHours(2)
+                    },
+                    new Mission
+                    {
+                        Id = 2,
+                        Name = "Pirate Cleanup",
+                        LevelRequirement = 1,
+                        ActiveSince = DateTimeOffset.UtcNow,
+                        Active = false,
+                        CreditReward = 5,
+                        ExpReward = 110,
+                        ActiveSpan = TimeSpan.FromHours(12),
+                        Duration = TimeSpan.FromHours(6)
+                    },
+                    new Mission
+                    {
+                        Id = 3,
+                        Name = "Stockade Defense",
+                        LevelRequirement = 1,
+                        ActiveSince = DateTimeOffset.UtcNow,
+                        Active = false,
+                        CreditReward = 10,
+                        ExpReward = 100,
+                        ActiveSpan = TimeSpan.FromHours(24),
+                        Duration = TimeSpan.FromHours(12),
+                        LootRewards = new []{ 1 }
+                    },
+                    new Mission
+                    {
+                        Id = 4,
+                        Name = "Apple Gathering",
+                        LevelRequirement = 1,
+                        ActiveSince = DateTimeOffset.UtcNow,
+                        Active = false,
+                        CreditReward = 10,
+                        ExpReward = 100,
+                        ActiveSpan = TimeSpan.FromHours(3),
+                        Duration = TimeSpan.FromHours(1)
+                    },
+                    new Mission
+                    {
+                        Id = 5,
+                        Name = "Lost Cat",
+                        LevelRequirement = 1,
+                        ActiveSince = DateTimeOffset.UtcNow,
+                        Active = false,
+                        CreditReward = 10,
+                        ExpReward = 50,
+                        ActiveSpan = TimeSpan.FromHours(2),
+                        Duration = TimeSpan.FromMinutes(30)
+                    },
+                    // Missions available from level 5
+                    new Mission
+                    {
+                        Id = 6,
+                        Name = "Night Shift",
+                        LevelRequirement = 5,
+                        ActiveSince = DateTimeOffset.UtcNow,
+                        Active = false,
+                        CreditReward = 50,
+                        ExpReward = 300,
+                        ActiveSpan = TimeSpan.FromHours(12),
+                        Duration = TimeSpan.FromHours(6)
+                    },
+                    new Mission
+                    {
+                        Id = 7,
+                        Name = "Scout territory",
+                        LevelRequirement = 5,
+                        ActiveSince = DateTimeOffset.UtcNow,
+                        Active = false,
+                        CreditReward = 50,
+                        ExpReward = 1000,
+                        ActiveSpan = TimeSpan.FromHours(24),
+                        Duration = TimeSpan.FromHours(12)
+                    },
+                    new Mission
+                    {
+                        Id = 8,
+                        Name = "Help out farmer",
+                        LevelRequirement = 5,
+                        ActiveSince = DateTimeOffset.UtcNow,
+                        Active = false,
+                        CreditReward = 50,
+                        ExpReward = 200,
+                        ActiveSpan = TimeSpan.FromHours(2),
+                        Duration = TimeSpan.FromMinutes(30)
+                    },
+                    new Mission
+                    {
+                        Id = 9,
+                        Name = "Cook feast",
+                        LevelRequirement = 5,
+                        ActiveSince = DateTimeOffset.UtcNow,
+                        Active = false,
+                        CreditReward = 50,
+                        ExpReward = 300,
+                        ActiveSpan = TimeSpan.FromHours(6),
+                        Duration = TimeSpan.FromHours(2)
+                    },
+                    new Mission
+                    {
+                        Id = 10,
+                        Name = "Patrol",
+                        LevelRequirement = 5,
+                        ActiveSince = DateTimeOffset.UtcNow,
+                        Active = false,
+                        CreditReward = 50,
+                        ExpReward = 300,
+                        ActiveSpan = TimeSpan.FromHours(6),
+                        Duration = TimeSpan.FromHours(2)
+                    }
+                });
+            });
+            modelBuilder.Entity<MissionCompleted>(x =>
+            {
+                x.HasKey(e => new {e.UserId, e.MissionId});
+                x.Property(e => e.UserId).HasConversion<long>();
+            });
+            modelBuilder.Entity<MissionProgress>(x =>
+            {
+                x.HasKey(e => new {e.UserId, e.MissionId});
+                x.Property(e => e.UserId).HasConversion<long>();
+            });
+
+            modelBuilder.Entity<Quest>(x =>
+            {
+                x.HasKey(e => e.Id);
+                x.HasData(new List<Quest>
+                {
+                    new Quest
+                    {
+                        Id = 1,
+                        ZoneId = 1,
+                        Amount = 5,
+                        CreditReward = 10,
+                        ExpReward = 100,
+                        Name = ""
+                    },
+                    new Quest
+                    {
+                        Id = 2,
+                        ZoneId = 1,
+                        Amount = 5,
+                        CreditReward = 10,
+                        ExpReward = 100,
+                        Name = ""
+                    },
+                    new Quest
+                    {
+                        Id = 3,
+                        ZoneId = 1,
+                        Amount = 5,
+                        CreditReward = 10,
+                        ExpReward = 100,
+                        Name = ""
+                    },
+                    new Quest
+                    {
+                        Id = 4,
+                        ZoneId = 1,
+                        Amount = 5,
+                        CreditReward = 10,
+                        ExpReward = 100,
+                        Name = ""
+                    },
+                    new Quest
+                    {
+                        Id = 5,
+                        ZoneId = 1,
+                        Amount = 5,
+                        CreditReward = 10,
+                        ExpReward = 100,
+                        Name = ""
+                    },
+
+                    new Quest
+                    {
+                        Id = 6,
+                        ZoneId = 2,
+                        Amount = 5,
+                        CreditReward = 50,
+                        ExpReward = 250,
+                        Name = ""
+                    },
+                    new Quest
+                    {
+                        Id = 7,
+                        ZoneId = 2,
+                        Amount = 5,
+                        CreditReward = 50,
+                        ExpReward = 250,
+                        Name = ""
+                    },
+                    new Quest
+                    {
+                        Id = 8,
+                        ZoneId = 2,
+                        Amount = 5,
+                        CreditReward = 50,
+                        ExpReward = 250,
+                        Name = ""
+                    },
+                    new Quest
+                    {
+                        Id = 9,
+                        ZoneId = 2,
+                        Amount = 5,
+                        CreditReward = 50,
+                        ExpReward = 250,
+                        Name = ""
+                    },
+                    new Quest
+                    {
+                        Id = 10,
+                        ZoneId = 2,
+                        Amount = 5,
+                        CreditReward = 50,
+                        ExpReward = 250,
+                        Name = ""
+                    }
+                });
+            });
+            modelBuilder.Entity<CompletedQuest>(x =>
+            {
+                x.HasKey(e => new { e.UserId, e.QuestId });
+                x.Property(e => e.UserId).HasConversion<long>();
+            });
+            modelBuilder.Entity<ActiveQuest>(x =>
+            {
+                x.HasKey(e => new { e.UserId, e.QuestId });
+                x.Property(e => e.UserId).HasConversion<long>();
+            });
+
             modelBuilder.Entity<GuildConfig>(x =>
             {
                 x.HasKey(e => e.GuildId);
@@ -514,19 +773,6 @@ namespace DiscordHackWeek.Services.Database
                 x.Property(e => e.IgnoreList).HasConversion(e => e.Select(i => (long)i).ToList(),
                     e => e.Select(i => (ulong)i).ToList());
             });
-            
-            /*
-            modelBuilder.Entity<LootTable>(x =>
-            {
-                x.HasKey(e => new {e.EnemyId, e.ItemId}); 
-                x.HasOne(bc => bc.Enemy)
-                    .WithMany(b => b.Loot)
-                    .HasForeignKey(bc => bc.EnemyId);
-                x.HasOne(bc => bc.Item)
-                    .WithMany(c => c.LootTable)
-                    .HasForeignKey(bc => bc.ItemId);
-            });
-            */
         }
     }
 }
