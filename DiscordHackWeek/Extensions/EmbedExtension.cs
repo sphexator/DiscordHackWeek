@@ -10,7 +10,7 @@ namespace DiscordHackWeek.Extensions
     public static class EmbedExtension
     {
         public static PaginatedMessage PaginateBuilder(this List<string> pages, SocketGuild guild, string authorName, string title, int count = 5)
-    => new PaginatedMessage().Builder(pages, guild.IconUrl, authorName, title, count);
+            => new PaginatedMessage().Builder(pages, guild.IconUrl, authorName, title, count);
         public static PaginatedMessage PaginateBuilder(this List<string> pages, SocketGuildUser user, string authorName, string title, int count = 5)
             => new PaginatedMessage().Builder(pages, user.GetAvatar(), authorName, title, count);
 
