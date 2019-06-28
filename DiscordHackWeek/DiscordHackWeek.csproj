@@ -32,4 +32,8 @@
     <ProjectReference Include="..\DiscordHackWeek.Interactive\DiscordHackWeek.Interactive.csproj" />
     <ProjectReference Include="..\DiscordHackWeek.Shared\DiscordHackWeek.Shared.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\Font\" />
+  </ItemGroup>
 </Project>
