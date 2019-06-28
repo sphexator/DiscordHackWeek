@@ -13,7 +13,6 @@ using Qmmands;
 
 namespace DiscordHackWeek.Modules
 {
-    [Name("Game")]
     public class GameModule : InteractiveBase
     {
         private readonly CombatHandling _combat;

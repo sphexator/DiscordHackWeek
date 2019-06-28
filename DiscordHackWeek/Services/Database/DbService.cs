@@ -664,8 +664,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 10,
                         ExpReward = 100,
-                        Name = "",
-                        EnemyId = 1
+                        Name = ""
                     },
                     new Quest
                     {
@@ -674,8 +673,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 10,
                         ExpReward = 100,
-                        Name = "",
-                        EnemyId = 2
+                        Name = ""
                     },
                     new Quest
                     {
@@ -684,8 +682,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 10,
                         ExpReward = 100,
-                        Name = "",
-                        EnemyId = 3
+                        Name = ""
                     },
                     new Quest
                     {
@@ -694,8 +691,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 10,
                         ExpReward = 100,
-                        Name = "",
-                        EnemyId = 4
+                        Name = ""
                     },
                     new Quest
                     {
@@ -704,8 +700,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 10,
                         ExpReward = 100,
-                        Name = "",
-                        EnemyId = 5
+                        Name = ""
                     },
 
                     new Quest
@@ -715,8 +710,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 50,
                         ExpReward = 250,
-                        Name = "",
-                        EnemyId = 6
+                        Name = ""
                     },
                     new Quest
                     {
@@ -725,8 +719,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 50,
                         ExpReward = 250,
-                        Name = "",
-                        EnemyId = 7
+                        Name = ""
                     },
                     new Quest
                     {
@@ -735,8 +728,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 50,
                         ExpReward = 250,
-                        Name = "",
-                        EnemyId = 8
+                        Name = ""
                     },
                     new Quest
                     {
@@ -745,8 +737,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 50,
                         ExpReward = 250,
-                        Name = "",
-                        EnemyId = 9
+                        Name = ""
                     },
                     new Quest
                     {
@@ -755,8 +746,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 50,
                         ExpReward = 250,
-                        Name = "",
-                        EnemyId = 10
+                        Name = ""
                     }
                 });
             });
