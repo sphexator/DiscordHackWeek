@@ -233,7 +233,8 @@ namespace DiscordHackWeek.Services.Database
                     DamageIncrease = 10,
                     HealthIncrease = 0,
                     Unique = false,
-                    ItemType = ItemType.Weapon
+                    ItemType = ItemType.Weapon,
+                    ImageUrl = "Data/ProfileAssets/Weapon/Sword.png"
                 });
                 x.HasData(new Item
                 {
@@ -287,7 +288,8 @@ namespace DiscordHackWeek.Services.Database
                     DamageIncrease = 20,
                     HealthIncrease = 0,
                     Unique = false,
-                    ItemType = ItemType.Weapon
+                    ItemType = ItemType.Weapon,
+                    ImageUrl = "Data/ProfileAssets/Weapon/Mace.png"
                 });
                 x.HasData(new Item
                 {
@@ -308,7 +310,8 @@ namespace DiscordHackWeek.Services.Database
                     DamageIncrease = 30,
                     HealthIncrease = 0,
                     Unique = false,
-                    ItemType = ItemType.Weapon
+                    ItemType = ItemType.Weapon,
+                    ImageUrl = "Data/ProfileAssets/Weapon/Axe.png"
                 });
                 x.HasData(new Item
                 {

@@ -13,6 +13,8 @@ namespace DiscordHackWeek.Services.Database.Tables
         public int DamageIncrease { get; set; }
         public int CritIncrease { get; set; }
 
+        public string ImageUrl { get; set; }
+
         // public ICollection<Inventory> UserInventories { get; set; }
         // public ICollection<LootTable> LootTable { get; set; }
     }
