@@ -23,6 +23,7 @@ namespace DiscordHackWeek
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<Worker>();
+                    services.AddHostedService<MissionWorker>();
                     DbWabWab.DbCon = hostContext.Configuration["DbCon"];
                     services.AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
                     {
