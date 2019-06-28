@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Discord;
+﻿using System.Net.Http;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
-using SixLabors.Primitives;
-using Image = SixLabors.ImageSharp.Image;
 
 namespace DiscordHackWeek.Services
 {
