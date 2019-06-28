@@ -31,6 +31,7 @@ namespace DiscordHackWeek
                     {
                         DefaultRunMode = RunMode.Parallel
                     }));
+                    services.AddLogging();
                 });
     }
 }

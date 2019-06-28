@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using DiscordHackWeek.Entities;
 using DiscordHackWeek.Entities.Combat;
 using DiscordHackWeek.Services.Database.Tables;
@@ -20,10 +20,13 @@ namespace DiscordHackWeek.Services.Database
         public virtual DbSet<Inventory> Inventories { get; set; }
         public virtual DbSet<Enemy> Enemies { get; set; }
 
+        public virtual DbSet<GuildConfig> GuildConfigs { get; set; }
+        public virtual DbSet<IgnoreChannel> IgnoreChannels { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured) 
-                optionsBuilder.UseNpgsql("");
+                optionsBuilder.UseNpgsql("Server=192.168.10.145;database=WumpusWonderland;Uid=postgres;Pwd=1023");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -70,6 +73,7 @@ namespace DiscordHackWeek.Services.Database
                 x.Property(e => e.Id).ValueGeneratedOnAdd();
                 x.HasData(new Zone
                 {
+                    Id = 1,
                     Name = "Silver Willow Forest",
                     LowLevel = 1,
                     HighLevel = 1,
@@ -79,6 +83,7 @@ namespace DiscordHackWeek.Services.Database
                 });
                 x.HasData(new Zone
                 {
+                    Id = 2,
                     Name = "Quiet Forest",
                     LowLevel = 1,
                     HighLevel = 1,
@@ -88,6 +93,7 @@ namespace DiscordHackWeek.Services.Database
                 });
                 x.HasData(new Zone
                 {
+                    Id = 3,
                     Name = "Windy Hinterlands",
                     LowLevel = 1,
                     HighLevel = 1,
@@ -97,6 +103,7 @@ namespace DiscordHackWeek.Services.Database
                 });
                 x.HasData(new Zone
                 {
+                    Id = 4,
                     Name = "The Eastern Tundra",
                     LowLevel = 1,
                     HighLevel = 1,
@@ -106,6 +113,7 @@ namespace DiscordHackWeek.Services.Database
                 });
                 x.HasData(new Zone
                 {
+                    Id = 5,
                     Name = "Canomore Fjord",
                     LowLevel = 1,
                     HighLevel = 1,
@@ -115,6 +123,7 @@ namespace DiscordHackWeek.Services.Database
                 });
                 x.HasData(new Zone
                 {
+                    Id = 6,
                     Name = "Wild Forest",
                     LowLevel = 1,
                     HighLevel = 1,
@@ -124,6 +133,7 @@ namespace DiscordHackWeek.Services.Database
                 });
                 x.HasData(new Zone
                 {
+                    Id = 7,
                     Name = "Toxic Abyss",
                     LowLevel = 1,
                     HighLevel = 1,
@@ -133,6 +143,7 @@ namespace DiscordHackWeek.Services.Database
                 });
                 x.HasData(new Zone
                 {
+                    Id = 8,
                     Name = "Forbidden Badlands",
                     LowLevel = 1,
                     HighLevel = 1,
@@ -142,6 +153,7 @@ namespace DiscordHackWeek.Services.Database
                 });
                 x.HasData(new Zone
                 {
+                    Id = 9,
                     Name = "Raging Steppes",
                     LowLevel = 1,
                     HighLevel = 1,
@@ -151,6 +163,7 @@ namespace DiscordHackWeek.Services.Database
                 });
                 x.HasData(new Zone
                 {
+                    Id = 10,
                     Name = "Angry Steppes",
                     LowLevel = 1,
                     HighLevel = 1,
@@ -160,6 +173,7 @@ namespace DiscordHackWeek.Services.Database
                 });
                 x.HasData(new Zone
                 {
+                    Id = 11,
                     Name = "Phantom Lands",
                     LowLevel = 1,
                     HighLevel = 1,
@@ -169,6 +183,7 @@ namespace DiscordHackWeek.Services.Database
                 });
                 x.HasData(new Zone
                 {
+                    Id = 12,
                     Name = "Shadow Lands",
                     LowLevel = 1,
                     HighLevel = 1,
@@ -178,6 +193,7 @@ namespace DiscordHackWeek.Services.Database
                 });
                 x.HasData(new Zone
                 {
+                    Id = 13,
                     Name = "The Hidden Isles",
                     LowLevel = 1,
                     HighLevel = 1,
@@ -351,6 +367,7 @@ namespace DiscordHackWeek.Services.Database
                 // Silver Willow Forest monsters
                 x.HasData(new Enemy
                 {
+                    Id = 1,
                     Name = "Bear",
                     Credit = 0,
                     Exp = 20,
@@ -359,10 +376,11 @@ namespace DiscordHackWeek.Services.Database
                     ZoneId = 1,
                     ArmorId = null,
                     WeaponId = null,
-                    LootTableIds = new List<int> { 13 }
+                    LootTableIds = new [] { 13 }
                 });
                 x.HasData(new Enemy
                 {
+                    Id = 2,
                     Name = "Boar",
                     Credit = 0,
                     Exp = 20,
@@ -371,10 +389,11 @@ namespace DiscordHackWeek.Services.Database
                     ZoneId = 1,
                     ArmorId = null,
                     WeaponId = null,
-                    LootTableIds = new List<int> { 11 }
+                    LootTableIds = new [] { 11 }
                 });
                 x.HasData(new Enemy
                 {
+                    Id = 3,
                     Name = "Spider",
                     Credit = 0,
                     Exp = 20,
@@ -383,10 +402,11 @@ namespace DiscordHackWeek.Services.Database
                     ZoneId = 1,
                     ArmorId = null,
                     WeaponId = null,
-                    LootTableIds = new List<int> { 10 }
+                    LootTableIds = new [] { 10 }
                 });
                 x.HasData(new Enemy
                 {
+                    Id = 4,
                     Name = "Wolf",
                     Credit = 0,
                     Exp = 20,
@@ -395,10 +415,11 @@ namespace DiscordHackWeek.Services.Database
                     ZoneId = 1,
                     ArmorId = null,
                     WeaponId = null,
-                    LootTableIds = new List<int> { 12 }
+                    LootTableIds = new [] { 12 }
                 });
                 x.HasData(new Enemy
                 {
+                    Id = 5,
                     Name = "Pirate",
                     Credit = 5,
                     Exp = 30,
@@ -407,12 +428,13 @@ namespace DiscordHackWeek.Services.Database
                     ZoneId = 1,
                     ArmorId = 1,
                     WeaponId = 1,
-                    LootTableIds = new List<int> { 14, 15 }
+                    LootTableIds = new [] { 14, 15 }
                 });
 
                 // Quiet Forest monsters
                 x.HasData(new Enemy
                 {
+                    Id = 6,
                     Name = "Bear",
                     Credit = 0,
                     Exp = 20,
@@ -421,10 +443,11 @@ namespace DiscordHackWeek.Services.Database
                     ZoneId = 2,
                     ArmorId = null,
                     WeaponId = null,
-                    LootTableIds = new List<int> { 13 }
+                    LootTableIds = new [] { 13 }
                 });
                 x.HasData(new Enemy
                 {
+                    Id = 7,
                     Name = "Boar",
                     Credit = 0,
                     Exp = 20,
@@ -433,10 +456,11 @@ namespace DiscordHackWeek.Services.Database
                     ZoneId = 2,
                     ArmorId = null,
                     WeaponId = null,
-                    LootTableIds = new List<int> { 11 }
+                    LootTableIds = new [] { 11 }
                 });
                 x.HasData(new Enemy
                 {
+                    Id = 8,
                     Name = "Spider",
                     Credit = 0,
                     Exp = 20,
@@ -445,10 +469,11 @@ namespace DiscordHackWeek.Services.Database
                     ZoneId = 2,
                     ArmorId = null,
                     WeaponId = null,
-                    LootTableIds = new List<int> { 10 }
+                    LootTableIds = new [] { 10 }
                 });
                 x.HasData(new Enemy
                 {
+                    Id = 9,
                     Name = "Wolf",
                     Credit = 0,
                     Exp = 20,
@@ -457,10 +482,11 @@ namespace DiscordHackWeek.Services.Database
                     ZoneId = 2,
                     ArmorId = null,
                     WeaponId = null,
-                    LootTableIds = new List<int> { 12 }
+                    LootTableIds = new [] { 12 }
                 });
                 x.HasData(new Enemy
                 {
+                    Id = 10,
                     Name = "Pirate",
                     Credit = 5,
                     Exp = 50,
@@ -469,9 +495,23 @@ namespace DiscordHackWeek.Services.Database
                     ZoneId = 2,
                     ArmorId = 1,
                     WeaponId = 1,
-                    LootTableIds = new List<int> { 14, 15, 6, 7 }
+                    LootTableIds = new [] { 14, 15, 6, 7 }
                 });
             });
+
+            modelBuilder.Entity<GuildConfig>(x =>
+            {
+                x.HasKey(e => e.GuildId);
+                x.Property(e => e.GuildId).HasConversion<long>();
+            });
+
+            modelBuilder.Entity<IgnoreChannel>(x =>
+            {
+                x.HasKey(e => e.GuildId);
+                x.Property(e => e.IgnoreList).HasConversion(e => e.Select(i => (long)i).ToList(),
+                    e => e.Select(i => (ulong)i).ToList());
+            });
+            
             /*
             modelBuilder.Entity<LootTable>(x =>
             {

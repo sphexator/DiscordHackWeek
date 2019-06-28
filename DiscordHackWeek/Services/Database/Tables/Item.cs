@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using DiscordHackWeek.Entities;
+﻿using DiscordHackWeek.Entities;
 
 namespace DiscordHackWeek.Services.Database.Tables
 {

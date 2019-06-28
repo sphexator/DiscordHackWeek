@@ -70,7 +70,7 @@ namespace DiscordHackWeek.Services.Combat
                 embed.AddField("Exp", response);
             }
 
-            if (enemyData.LootTableIds.Count != 0)
+            if (enemyData.LootTableIds.Length != 0)
             {
                 update = true;
                 var loot = new List<Item>();
@@ -78,7 +78,7 @@ namespace DiscordHackWeek.Services.Combat
                 if (enemyData.Credit != 0) lootResponse += $"{enemyData.Credit} credit\n";
                 for (var i = 0; i < 3; i++)
                 {
-                    var item = await db.Items.FindAsync(enemyData.LootTableIds.ElementAt(_random.Next(enemyData.LootTableIds.Count)));
+                    var item = await db.Items.FindAsync(enemyData.LootTableIds.ElementAt(_random.Next(enemyData.LootTableIds.Length)));
                     if (!loot.Contains(item))
                     {
                         loot.Add(item);
