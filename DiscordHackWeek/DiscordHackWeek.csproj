@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <Folder Include="Data\Font\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
   <ItemGroup>

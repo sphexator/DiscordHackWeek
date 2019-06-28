@@ -88,6 +88,36 @@ namespace DiscordHackWeek.Services.Database
                 x.HasData(new Zone
                 {
                     Id = 1,
+                    Name = "The Eastern Tundra",
+                    LowLevel = 1,
+                    HighLevel = 1,
+                    Description = "The Eastern Tundra",
+                    ImageSrc = "https://i.imgur.com/PMWHAnk.png",
+                    ContinentId = 1
+                });
+                x.HasData(new Zone
+                {
+                    Id = 2,
+                    Name = "Quiet Valley",
+                    LowLevel = 1,
+                    HighLevel = 1,
+                    Description = "Quiet Valley",
+                    ImageSrc = "https://i.imgur.com/akHtZ70.png",
+                    ContinentId = 1
+                });
+                x.HasData(new Zone
+                {
+                    Id = 3,
+                    Name = "Canomore Fjord",
+                    LowLevel = 1,
+                    HighLevel = 1,
+                    Description = "Canomore Fjord",
+                    ImageSrc = "https://i.imgur.com/WlHD4zF.png",
+                    ContinentId = 1
+                });
+                x.HasData(new Zone
+                {
+                    Id = 4,
                     Name = "Silver Willow Forest",
                     LowLevel = 1,
                     HighLevel = 1,
@@ -97,38 +127,8 @@ namespace DiscordHackWeek.Services.Database
                 });
                 x.HasData(new Zone
                 {
-                    Id = 2,
-                    Name = "Quiet Forest",
-                    LowLevel = 1,
-                    HighLevel = 1,
-                    Description = "",
-                    ImageSrc = "",
-                    ContinentId = 1
-                });
-                x.HasData(new Zone
-                {
-                    Id = 3,
-                    Name = "Windy Hinterlands",
-                    LowLevel = 1,
-                    HighLevel = 1,
-                    Description = "",
-                    ImageSrc = "",
-                    ContinentId = 1
-                });
-                x.HasData(new Zone
-                {
-                    Id = 4,
-                    Name = "The Eastern Tundra",
-                    LowLevel = 1,
-                    HighLevel = 1,
-                    Description = "",
-                    ImageSrc = "",
-                    ContinentId = 1
-                });
-                x.HasData(new Zone
-                {
                     Id = 5,
-                    Name = "Canomore Fjord",
+                    Name = "Windy Hinterlands",
                     LowLevel = 1,
                     HighLevel = 1,
                     Description = "",
@@ -384,11 +384,11 @@ namespace DiscordHackWeek.Services.Database
                 x.HasData(new Enemy
                 {
                     Id = 1,
-                    Name = "Bear",
+                    Name = "Saber",
                     Credit = 0,
                     Exp = 20,
                     Type = EnemyType.Beast,
-                    Image = "",
+                    Image = "https://i.imgur.com/gALvBbU.png",
                     ZoneId = 1,
                     ArmorId = null,
                     WeaponId = null,
@@ -397,11 +397,11 @@ namespace DiscordHackWeek.Services.Database
                 x.HasData(new Enemy
                 {
                     Id = 2,
-                    Name = "Boar",
+                    Name = "Wolf",
                     Credit = 0,
                     Exp = 20,
                     Type = EnemyType.Beast,
-                    Image = "",
+                    Image = "https://i.imgur.com/9yaOrDg.png",
                     ZoneId = 1,
                     ArmorId = null,
                     WeaponId = null,
@@ -410,11 +410,11 @@ namespace DiscordHackWeek.Services.Database
                 x.HasData(new Enemy
                 {
                     Id = 3,
-                    Name = "Spider",
+                    Name = "Forest",
                     Credit = 0,
                     Exp = 20,
                     Type = EnemyType.Beast,
-                    Image = "",
+                    Image = "https://i.imgur.com/vknNtaZ.png",
                     ZoneId = 1,
                     ArmorId = null,
                     WeaponId = null,
@@ -423,11 +423,11 @@ namespace DiscordHackWeek.Services.Database
                 x.HasData(new Enemy
                 {
                     Id = 4,
-                    Name = "Wolf",
+                    Name = "Snake",
                     Credit = 0,
                     Exp = 20,
                     Type = EnemyType.Beast,
-                    Image = "",
+                    Image = "https://i.imgur.com/4V82VgZ.png",
                     ZoneId = 1,
                     ArmorId = null,
                     WeaponId = null,
@@ -436,11 +436,11 @@ namespace DiscordHackWeek.Services.Database
                 x.HasData(new Enemy
                 {
                     Id = 5,
-                    Name = "Pirate",
+                    Name = "Skeleton",
                     Credit = 5,
                     Exp = 30,
                     Type = EnemyType.Humanoid,
-                    Image = "",
+                    Image = "https://i.imgur.com/bHD4r1d.png",
                     ZoneId = 1,
                     ArmorId = 1,
                     WeaponId = 1,
@@ -451,11 +451,11 @@ namespace DiscordHackWeek.Services.Database
                 x.HasData(new Enemy
                 {
                     Id = 6,
-                    Name = "Bear",
+                    Name = "Saber",
                     Credit = 0,
                     Exp = 20,
                     Type = EnemyType.Beast,
-                    Image = "",
+                    Image = "https://i.imgur.com/gALvBbU.png",
                     ZoneId = 2,
                     ArmorId = null,
                     WeaponId = null,
@@ -464,11 +464,11 @@ namespace DiscordHackWeek.Services.Database
                 x.HasData(new Enemy
                 {
                     Id = 7,
-                    Name = "Boar",
+                    Name = "Wolf",
                     Credit = 0,
                     Exp = 20,
                     Type = EnemyType.Beast,
-                    Image = "",
+                    Image = "https://i.imgur.com/9yaOrDg.png",
                     ZoneId = 2,
                     ArmorId = null,
                     WeaponId = null,
@@ -477,11 +477,11 @@ namespace DiscordHackWeek.Services.Database
                 x.HasData(new Enemy
                 {
                     Id = 8,
-                    Name = "Spider",
+                    Name = "Forest",
                     Credit = 0,
                     Exp = 20,
                     Type = EnemyType.Beast,
-                    Image = "",
+                    Image = "https://i.imgur.com/vknNtaZ.png",
                     ZoneId = 2,
                     ArmorId = null,
                     WeaponId = null,
@@ -490,11 +490,11 @@ namespace DiscordHackWeek.Services.Database
                 x.HasData(new Enemy
                 {
                     Id = 9,
-                    Name = "Wolf",
+                    Name = "Snake",
                     Credit = 0,
                     Exp = 20,
                     Type = EnemyType.Beast,
-                    Image = "",
+                    Image = "https://i.imgur.com/4V82VgZ.png",
                     ZoneId = 2,
                     ArmorId = null,
                     WeaponId = null,
@@ -503,11 +503,11 @@ namespace DiscordHackWeek.Services.Database
                 x.HasData(new Enemy
                 {
                     Id = 10,
-                    Name = "Pirate",
+                    Name = "Skeleton",
                     Credit = 5,
                     Exp = 50,
                     Type = EnemyType.Humanoid,
-                    Image = "",
+                    Image = "https://i.imgur.com/bHD4r1d.png",
                     ZoneId = 2,
                     ArmorId = 1,
                     WeaponId = 1,
@@ -667,7 +667,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 10,
                         ExpReward = 100,
-                        Name = "",
+                        Name = "Saber Killer I",
                         EnemyId = 1
                     },
                     new Quest
@@ -677,7 +677,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 10,
                         ExpReward = 100,
-                        Name = "",
+                        Name = "Wolf Killer I",
                         EnemyId = 2
                     },
                     new Quest
@@ -687,7 +687,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 10,
                         ExpReward = 100,
-                        Name = "",
+                        Name = "Forest Killer I",
                         EnemyId = 3
                     },
                     new Quest
@@ -697,7 +697,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 10,
                         ExpReward = 100,
-                        Name = "",
+                        Name = "Snake Killer I",
                         EnemyId = 4
                     },
                     new Quest
@@ -707,7 +707,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 10,
                         ExpReward = 100,
-                        Name = "",
+                        Name = "Skeleton Killer I",
                         EnemyId = 5
                     },
 
@@ -718,7 +718,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 50,
                         ExpReward = 250,
-                        Name = "",
+                        Name = "Puma Killer II",
                         EnemyId = 6
                     },
                     new Quest
@@ -728,7 +728,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 50,
                         ExpReward = 250,
-                        Name = "",
+                        Name = "Wolf Killer II",
                         EnemyId = 7
                     },
                     new Quest
@@ -738,7 +738,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 50,
                         ExpReward = 250,
-                        Name = "",
+                        Name = "Forest Killer II",
                         EnemyId = 8
                     },
                     new Quest
@@ -748,7 +748,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 50,
                         ExpReward = 250,
-                        Name = "",
+                        Name = "Snake Killer II",
                         EnemyId = 9
                     },
                     new Quest
@@ -758,7 +758,7 @@ namespace DiscordHackWeek.Services.Database
                         Amount = 5,
                         CreditReward = 50,
                         ExpReward = 250,
-                        Name = "",
+                        Name = "Skeleton Killer II",
                         EnemyId = 10
                     }
                 });
