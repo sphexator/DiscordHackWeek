@@ -3,6 +3,7 @@
     public class Quest
     {
         public int Id { get; set; }
+        public string Name { get; set; }
         public int ZoneId { get; set; }
         public int EnemyId { get; set; }
         public int Amount { get; set; }
