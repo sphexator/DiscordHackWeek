@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using DiscordHackWeek.Entities;
+﻿using DiscordHackWeek.Entities;
 using DiscordHackWeek.Services.Database.Tables;
 
 namespace DiscordHackWeek.Services.Experience
@@ -10,6 +9,7 @@ namespace DiscordHackWeek.Services.Experience
 
         public bool AddExpAndCredit(int exp, int credit, User user, out string response)
         {
+            response = null;
             if (user.Level != 30)
             {
                 if (user.Exp + exp >= ExpToNextLevel(user.Level))
@@ -19,17 +19,16 @@ namespace DiscordHackWeek.Services.Experience
 
                     if (user.Level % 2 == 0) user.UnspentTalentPoints++;
 
-                    response = $"gained {exp} and leveled up to {user.Level}!";
+                    response = $"gained {exp} exp and leveled up to {user.Level}!";
                 }
                 else
                 {
                     user.Exp += exp;
-                    response = $"gained {exp}";
+                    response = $"gained {exp} exp";
                 }
                 user.TotalExp += exp;
             }
             user.Credit += credit;
-            response = null;
             return user.Level != 30;
         }
     }
