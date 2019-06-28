@@ -9,7 +9,7 @@ namespace DiscordHackWeek.Extensions
     public static class ImageExtensions
     {
         public static IImageProcessingContext<Rgba32> ConvertToAvatar(
-    this IImageProcessingContext<Rgba32> processingContext, Size size, float cornerRadius)
+            this IImageProcessingContext<Rgba32> processingContext, Size size, float cornerRadius)
         {
             return processingContext.Resize(new ResizeOptions
             {
