@@ -31,14 +31,55 @@ namespace DiscordHackWeek.Services.Combat
             _level = level;
         }
 
+        public async Task<User> StartAsync(SocketCommandContext context, DbService db)
+        {
+            var user = new User
+            {
+                UserId = context.User.Id,
+                Level = 1,
+                Exp = 0,
+                TotalExp = 0,
+                Credit = 0,
+                AttackMode = AttackType.Passive,
+                ContinentId = 1,
+                ZoneId = 1,
+                UnspentTalentPoints = 0,
+                DamageTalent = 0,
+                HealthTalent = 0,
+                WeaponId = 1,
+                ArmorId = 2
+            };
+            await db.Users.AddAsync(user);
+            await db.SaveChangesAsync();
+            var firstContinent = await db.Continents.FindAsync(1);
+            var firstZone = await db.Zones.FindAsync(1);
+            await context.ReplyAsync($"Welcome to Wonderland {context.User.Mention}!\n" +
+                                     $"You're starting off within the continent {firstContinent.Name} in {firstZone.Name} where you'll face off monsters to gain experience to level up and explore other zones. You can also send troops on missions or do quests to gain experience and loot!\n" +
+                                     "For every second level you level up, you'll receive a new talent point which you can spend to increase your health, or damage.\n\n" +
+                                     "Now, wait a bit and we'll resume back to the command and below is a list of basic commands to get started!\n" +
+                                     "Commands:\n" +
+                                     "-Search (Find an opponement)");
+            await Task.Delay(2000);
+            return user;
+        }
+
         public async Task SearchAsync(SocketCommandContext context, DbService db)
         {
             var user = await db.Users.FindAsync(context.User.Id);
+            bool newUser = false;
+            if (user == null) user = await StartAsync(context, db);
+            
             var enemies = await db.Enemies.Where(x => x.ZoneId == user.ZoneId).ToListAsync();
             var found = _random.Next(100);
             if (found >= 40)
             {
                 var enemy = enemies[_random.Next(enemies.Count)];
+                var embed = new EmbedBuilder
+                {
+                    Color = Color.Green,
+                    Description = $"{context.User.Mention} encountered a wild {enemy.Name}!",
+                    ThumbnailUrl = enemy.Image
+                };
                 await context.ReplyAsync($"{context.User.Mention} encountered a wild {enemy.Name}!", Color.Green.RawValue);
                 await BattleAsync(context, user, enemy, db);
             }
@@ -60,14 +101,14 @@ namespace DiscordHackWeek.Services.Combat
             var inventory = await db.Inventories.Where(x => x.UserId == context.User.Id).ToListAsync();
             var winner = await CombatAsync(msg, user, enemy, db, msgLog, inventory);
             if (winner.Name == enemy.Name) return;
-            var exp = _level.AddExpAndCredit(enemyData.Exp + _random.Next(-10, 10), enemyData.Credit, userData,
+            var exp = _level.AddExpAndCredit(enemyData.Exp + _random.Next(0, enemyData.Credit), enemyData.Credit, userData,
                 out var response);
             var embed = msg.Embeds.First().ToEmbedBuilder();
             var update = false;
             if (exp)
             {
                 update = true;
-                embed.AddField("Exp", response);
+                embed.AddField("Exp", response, true);
             }
 
             if (enemyData.LootTableIds.Length != 0)
@@ -76,7 +117,8 @@ namespace DiscordHackWeek.Services.Combat
                 var loot = new List<Item>();
                 var lootResponse = "";
                 if (enemyData.Credit != 0) lootResponse += $"{enemyData.Credit} credit\n";
-                for (var i = 0; i < 3; i++)
+                var amount = enemyData.LootTableIds.Length > 2 ? 3 : enemyData.LootTableIds.Length;
+                for (var i = 0; i < amount; i++)
                 {
                     var item = await db.Items.FindAsync(enemyData.LootTableIds.ElementAt(_random.Next(enemyData.LootTableIds.Length)));
                     if (!loot.Contains(item))
@@ -105,7 +147,7 @@ namespace DiscordHackWeek.Services.Combat
                     }
                 }
 
-                embed.AddField("Loot", lootResponse);
+                embed.AddField("Loot", lootResponse, true);
             }
 
             if (update) await msg.ModifyAsync(x => x.Embed = embed.Build());

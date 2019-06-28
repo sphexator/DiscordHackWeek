@@ -11,6 +11,7 @@ namespace DiscordHackWeek.Services
         private readonly ILogger<LogService> _logger;
         private readonly DiscordSocketClient _client;
         private readonly CommandService _command;
+
         public LogService(DiscordSocketClient client, CommandService command, ILogger<LogService> logger)
         {
             _client = client;

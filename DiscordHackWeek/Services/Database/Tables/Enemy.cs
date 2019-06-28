@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using DiscordHackWeek.Entities.Combat;
+﻿using DiscordHackWeek.Entities.Combat;
 
 namespace DiscordHackWeek.Services.Database.Tables
 {
@@ -9,6 +8,7 @@ namespace DiscordHackWeek.Services.Database.Tables
         public string Name { get; set; }
         public int ZoneId { get; set; }
         public string Image { get; set; }
+        public string ThumbImg { get; set; }
         public EnemyType Type { get; set; }
         public string LightAttack { get; set; }
         public string HeavyAttack { get; set; }
