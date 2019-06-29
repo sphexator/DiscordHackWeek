@@ -21,3 +21,4 @@ Prefix: -
 | am | Accepts a mission by its ID |
 | lm | Lists all available missions at this time |
 | ccm | Completes all missions that's completed and claims rewards |
+| talent | Spend remaining talents into either damage or health increase with -talent Damage/Health |
