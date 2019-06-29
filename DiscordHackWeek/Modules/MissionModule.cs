@@ -76,7 +76,8 @@ namespace DiscordHackWeek.Modules
                            $"Reward: Exp {x.ExpReward} - Credit {x.CreditReward}");
             }
 
-            await PagedReplyAsync(result.PaginateBuilder(Context.Guild, "Missions Available", null));
+            if (result.Count == 0) await Context.ReplyAsync("No Available Missions At This Moment", Color.Red.RawValue);
+            else await PagedReplyAsync(result.PaginateBuilder(Context.Guild, "Missions Available", null));
         }
 
         [Name("Claim Completed Mission")]
