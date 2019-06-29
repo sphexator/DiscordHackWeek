@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using DiscordHackWeek.Entities;
 using DiscordHackWeek.Entities.Combat;
 using DiscordHackWeek.Extensions;
 using DiscordHackWeek.Interactive;
@@ -33,6 +34,33 @@ namespace DiscordHackWeek.Modules
         {
             using var db = new DbService();
             await _combat.SearchAsync(Context, db);
+        }
+
+        [Name("talent")]
+        [Description("Spend a talent point into damage or heal")]
+        [Command("talent")]
+        public async Task TalentAsync(TalentType type = TalentType.Damage)
+        {
+            using var db = new DbService();
+            var user = await db.Users.FindAsync(Context.User.Id);
+            if (user == null) return;
+            if (user.UnspentTalentPoints == 0)
+            {
+                await Context.ReplyAsync("No available talent points left to spend", Color.Red.RawValue);
+                return;
+            }
+
+            if (type == TalentType.Damage)
+            {
+                user.DamageTalent++;
+                await Context.ReplyAsync("Put a talent point into damage!");
+            }
+            else
+            {
+                user.HealthTalent++;
+                await Context.ReplyAsync($"Put a talent point into health!");
+            }
+            await db.SaveChangesAsync();
         }
 
         [Name("GoTo")]
