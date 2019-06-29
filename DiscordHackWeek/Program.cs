@@ -5,7 +5,9 @@ using DiscordHackWeek.Entities;
 using DiscordHackWeek.Interactive;
 using DiscordHackWeek.Services;
 using DiscordHackWeek.Services.Combat;
+using DiscordHackWeek.Services.Database;
 using DiscordHackWeek.Services.Experience;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Qmmands;
@@ -42,6 +44,11 @@ namespace DiscordHackWeek
                     services.AddSingleton<InteractiveService>();
                     services.AddLogging();
                     services.AddSingleton(hostContext.Configuration);
+
+                    using (var db = new DbService())
+                    {
+                        db.Database.Migrate();
+                    }
                 });
     }
 }
