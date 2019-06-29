@@ -9,6 +9,8 @@ Discord Hack Week Bot using Discord.NET and Qmmands
 ## Usage
 Prefix: -
 
+[Invite Link](https://discordapp.com/api/oauth2/authorize?client_id=592792635320827943&permissions=51200&scope=bot)
+
 |    Command    |  Description  |
 | ------------- | ------------- |
 | search | Searches and engages in combat with monsters in current zone |
@@ -19,3 +21,4 @@ Prefix: -
 | am | Accepts a mission by its ID |
 | lm | Lists all available missions at this time |
 | ccm | Completes all missions that's completed and claims rewards |
+| talent | Spend remaining talents into either damage or health increase with -talent Damage/Health |
