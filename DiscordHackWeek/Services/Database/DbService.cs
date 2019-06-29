@@ -37,7 +37,7 @@ namespace DiscordHackWeek.Services.Database
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 #if  DEBUG
-            DbWabWab.DbCon = "Server=192.168.10.145;database=WumpusWonderland;Uid=postgres;Pwd=1023";
+            DbWabWab.DbCon = "Server=192.168.10.145;database=WumpusWonderland2;Uid=postgres;Pwd=1023";
 #endif
             if (!optionsBuilder.IsConfigured) 
                 optionsBuilder.UseNpgsql(DbWabWab.DbCon);

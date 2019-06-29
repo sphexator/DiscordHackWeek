@@ -65,7 +65,7 @@ namespace DiscordHackWeek.Services.Combat
 
         public async Task SearchAsync(SocketCommandContext context, DbService db)
         {
-            var user = await db.Users.FindAsync(context.User.Id) 
+            var user = await db.Users.FindAsync(context.User.Id)
                        ?? await StartAsync(context, db);
 
             var enemies = await db.Enemies.Where(x => x.ZoneId == user.ZoneId).ToListAsync();
@@ -77,12 +77,17 @@ namespace DiscordHackWeek.Services.Combat
                 {
                     Color = Color.Green,
                     Description = $"{context.User.Mention} encountered a wild {enemy.Name}!",
-                    ThumbnailUrl = enemy.Image
+                    ImageUrl = enemy.Image,
+                    Footer = new EmbedFooterBuilder {Text = "Combat starting shortly..."}
                 };
-                await context.ReplyAsync($"{context.User.Mention} encountered a wild {enemy.Name}!", Color.Green.RawValue);
+                await context.ReplyAsync(embed);
                 await BattleAsync(context, user, enemy, db);
             }
-            else await context.ReplyAsync($"{context.User.Mention} searched around and found no one", Color.Red.RawValue);
+            else
+            {
+                await context.ReplyAsync($"{context.User.Mention} searched around and found no one",
+                    Color.Red.RawValue);
+            }
         }
 
         public async Task BattleAsync(SocketCommandContext context, User userData, Enemy enemyData, DbService db)
@@ -96,11 +101,34 @@ namespace DiscordHackWeek.Services.Combat
 
             var msgLog = new LinkedList<string>();
             msgLog.AddFirst($"{user.Name} VS {enemy.Name}");
-            var msg = await context.ReplyAsync(msgLog.ListToString());
+
+            var Sendembed = new EmbedBuilder
+            {
+                Description = msgLog.ListToString(),
+                Color = Color.Purple,
+                Fields = new List<EmbedFieldBuilder>
+                {
+                    new EmbedFieldBuilder
+                    {
+                        Name = "Your HP",
+                        Value = $"{user.Health - user.DmgTaken}/{user.Health}",
+                        IsInline = true
+                    },
+                    new EmbedFieldBuilder
+                    {
+                        Name = "Enemy HP",
+                        Value = $"{enemy.Health - enemy.DmgTaken}/{enemy.Health}",
+                        IsInline = true
+                    }
+                }
+            };
+
+            var msg = await context.ReplyAsync(Sendembed);
             var inventory = await db.Inventories.Where(x => x.UserId == context.User.Id).ToListAsync();
             var winner = await CombatAsync(msg, user, enemy, db, msgLog, inventory);
             if (winner.Name == enemy.Name) return;
-            var exp = _level.AddExpAndCredit(enemyData.Exp + _random.Next(0, enemyData.Credit), enemyData.Credit, userData,
+            var exp = _level.AddExpAndCredit(enemyData.Exp + _random.Next(0, enemyData.Credit), enemyData.Credit,
+                userData,
                 out var response);
             var embed = msg.Embeds.First().ToEmbedBuilder();
             var update = false;
@@ -119,7 +147,8 @@ namespace DiscordHackWeek.Services.Combat
                 var amount = enemyData.LootTableIds.Length > 2 ? 3 : enemyData.LootTableIds.Length;
                 for (var i = 0; i < amount; i++)
                 {
-                    var item = await db.Items.FindAsync(enemyData.LootTableIds.ElementAt(_random.Next(enemyData.LootTableIds.Length)));
+                    var item = await db.Items.FindAsync(
+                        enemyData.LootTableIds.ElementAt(_random.Next(enemyData.LootTableIds.Length)));
                     if (!loot.Contains(item))
                     {
                         loot.Add(item);
@@ -170,7 +199,7 @@ namespace DiscordHackWeek.Services.Combat
                     {
                         var potion = await db.Items.FindAsync(potionId.ItemId);
                         UpdateBattleLog(msgLog,
-                            $"{user.Name} drank a {potion.Name} and regained {potion.HealthIncrease} health!");
+                            $"**{user.Name}** drank a **{potion.Name}** and regained **{potion.HealthIncrease} health**!");
                         user.DmgTaken -= potion.HealthIncrease;
                         if (potionId.Amount == 1) db.Inventories.Remove(potionId);
                         else potionId.Amount--;
@@ -183,7 +212,7 @@ namespace DiscordHackWeek.Services.Combat
                         {
                             var food = await db.Items.FindAsync(foodId.ItemId);
                             UpdateBattleLog(msgLog,
-                                $"{user.Name} ate {food.Name} and regained {food.Name} health!");
+                                $"**{user.Name}** ate **{food.Name}** and regained **{food.Name} health**!");
                             user.DmgTaken -= food.HealthIncrease;
                             if (foodId.Amount == 1) db.Inventories.Remove(foodId);
                             else foodId.Amount--;
@@ -197,34 +226,80 @@ namespace DiscordHackWeek.Services.Combat
                     enemy.DmgTaken += usDmg;
                     if (enemy.DmgTaken >= enemy.Health)
                     {
-                        UpdateBattleLog(msgLog, $"{user.Name} hit for {usDmg} damage and defeated {enemy.Name}");
+                        UpdateBattleLog(msgLog,
+                            $"**{user.Name}** hit for **{usDmg}** damage and **defeated {enemy.Name}**");
                         embed = msg.Embeds.First().ToEmbedBuilder();
                         embed.Description = msgLog.ListToString();
+                        embed.Fields = new List<EmbedFieldBuilder>
+                        {
+                            new EmbedFieldBuilder
+                            {
+                                Name = "Your HP",
+                                Value = $"{user.Health - user.DmgTaken}/{user.Health}",
+                                IsInline = true
+                            },
+                            new EmbedFieldBuilder
+                            {
+                                Name = "Enemy HP",
+                                Value = $"0/{enemy.Health}",
+                                IsInline = true
+                            }
+                        };
                         await msg.ModifyAsync(x => x.Embed = embed.Build());
                         await Task.Delay(2000);
                         return user;
                     }
 
-                    UpdateBattleLog(msgLog, $"{user.Name} hit {enemy.Name} for {usDmg} damage");
+                    UpdateBattleLog(msgLog, $"**{user.Name}** hit **{enemy.Name}** for **{usDmg}** damage");
                 }
 
                 var enDmg = CalculateDamage(enemy);
                 user.DmgTaken += enDmg;
                 if (user.DmgTaken < user.Health)
                 {
-                    UpdateBattleLog(msgLog, $"{enemy.Name} hit {user.Name} for {enDmg} damage");
+                    UpdateBattleLog(msgLog, $"**{enemy.Name}** hit **{user.Name}** for **{enDmg}** damage");
                     embed = msg.Embeds.First().ToEmbedBuilder();
                     embed.Description = msgLog.ListToString();
+                    embed.Fields = new List<EmbedFieldBuilder>
+                    {
+                        new EmbedFieldBuilder
+                        {
+                            Name = "Your HP",
+                            Value = $"{user.Health - user.DmgTaken}/{user.Health}",
+                            IsInline = true
+                        },
+                        new EmbedFieldBuilder
+                        {
+                            Name = "Enemy HP",
+                            Value = $"{enemy.Health - enemy.DmgTaken}/{enemy.Health}",
+                            IsInline = true
+                        }
+                    };
                     await msg.ModifyAsync(x => x.Embed = embed.Build());
                     await Task.Delay(2000);
                     continue;
                 }
 
-                UpdateBattleLog(msgLog, $"{enemy.Name} hit for {enDmg} damage and defeated {user.Name}");
+                UpdateBattleLog(msgLog, $"**{enemy.Name}** hit for **{enDmg}** damage and **defeated {user.Name}**");
                 UpdateBattleLog(msgLog, "You died :(");
                 embed = msg.Embeds.First().ToEmbedBuilder();
                 embed.Description = msgLog.ListToString();
                 embed.Color = Color.Red;
+                embed.Fields = new List<EmbedFieldBuilder>
+                {
+                    new EmbedFieldBuilder
+                    {
+                        Name = "Your HP",
+                        Value = $"0/{user.Health}",
+                        IsInline = true
+                    },
+                    new EmbedFieldBuilder
+                    {
+                        Name = "Enemy HP",
+                        Value = $"{enemy.Health - enemy.DmgTaken}/{enemy.Health}",
+                        IsInline = true
+                    }
+                };
                 await msg.ModifyAsync(x => x.Embed = embed.Build());
                 await Task.Delay(2000);
                 return enemy;
@@ -258,9 +333,9 @@ namespace DiscordHackWeek.Services.Combat
             var user = new CombatUser
             {
                 Name = socketUser.Username,
-                Health = 10 * userData.Level + 10 * userData.HealthTalent + 10 * armor.HealthIncrease,
-                AttackPower = 1 * userData.Level + 10 * userData.DamageTalent + 10 * weapon.DamageIncrease +
-                              10 * armor.DamageIncrease,
+                Health = 100 + 10 * userData.Level + 10 * userData.HealthTalent + 10 * armor.HealthIncrease,
+                AttackPower = 10 + 1 * userData.Level + 1 * userData.DamageTalent + 2 * weapon.DamageIncrease +
+                              2 * armor.DamageIncrease,
                 CriticalChance = 15 + 1 * weapon.CritIncrease + 10 * armor.CritIncrease,
                 DmgTaken = 0
             };
@@ -279,8 +354,8 @@ namespace DiscordHackWeek.Services.Combat
             var enemy = new CombatUser
             {
                 Name = enemyData.Name,
-                Health = 15 * level,
-                AttackPower = 1 * level,
+                Health = 150 * level,
+                AttackPower = 10 + 1 * level,
                 DmgTaken = 0,
                 CriticalChance = 10
             };
@@ -289,12 +364,12 @@ namespace DiscordHackWeek.Services.Combat
                 var eArmor = await db.Items.FindAsync(enemyData.ArmorId);
                 enemy.Health += 10 * eArmor.HealthIncrease;
                 enemy.CriticalChance += 1 * eArmor.CritIncrease;
-                enemy.AttackPower += 10 * eArmor.DamageIncrease;
+                enemy.AttackPower += 2 * eArmor.DamageIncrease;
             }
 
             if (!enemyData.WeaponId.HasValue) return enemy;
             var eWeapon = await db.Items.FindAsync(enemyData.WeaponId);
-            enemy.AttackPower += 10 * eWeapon.DamageIncrease;
+            enemy.AttackPower += 2 * eWeapon.DamageIncrease;
             enemy.CriticalChance += 1 * eWeapon.CritIncrease;
 
             return enemy;

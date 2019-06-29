@@ -36,6 +36,7 @@ namespace DiscordHackWeek
                     services.AddSingleton<CommandHandling>();
                     services.AddSingleton<CombatHandling>();
                     services.AddSingleton<LevelHandling>();
+                    services.AddSingleton<ImageHandling>();
                     services.AddSingleton<LogService>();
                     services.AddSingleton<Random>();
                     services.AddSingleton<InteractiveService>();

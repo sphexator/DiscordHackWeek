@@ -27,7 +27,7 @@ namespace DiscordHackWeek.Modules
         }
 
         [Name("Search")]
-        [Description("")]
+        [Description("Searches for a game")]
         [Command("search")]
         public async Task PlayAsync()
         {
@@ -36,7 +36,7 @@ namespace DiscordHackWeek.Modules
         }
 
         [Name("GoTo")]
-        [Description("")]
+        [Description("Changes zone to a different zone by name")]
         [Command("goto", "travel")]
         [Priority(2)]
         public async Task TravelAsync([Remainder] string name)
@@ -45,7 +45,7 @@ namespace DiscordHackWeek.Modules
             var zone = await db.Zones.FirstOrDefaultAsync(x => x.Name == name);
             if (zone == null)
             {
-
+                await Context.ReplyAsync("Couldn't find a zone with that name!", Color.Red.RawValue);
                 return;
             }
 
@@ -59,7 +59,7 @@ namespace DiscordHackWeek.Modules
         }
 
         [Name("GoTo")]
-        [Description("")]
+        [Description("Changes zone to a different zone by ID")]
         [Command("goto", "travel")]
         [Priority(1)]
         public async Task TravelAsync(int id)
@@ -68,7 +68,7 @@ namespace DiscordHackWeek.Modules
             var zone = await db.Zones.FirstOrDefaultAsync(x => x.Id == id);
             if (zone == null)
             {
-
+                await Context.ReplyAsync("Couldn't find a zone with that id!", Color.Red.RawValue);
                 return;
             }
 
@@ -82,7 +82,7 @@ namespace DiscordHackWeek.Modules
         }
 
         [Name("Zones")]
-        [Description("")]
+        [Description("List of zones")]
         [Command("zones")]
         public async Task ZonesAsync()
         {
@@ -90,6 +90,7 @@ namespace DiscordHackWeek.Modules
             var zones = new List<ImagePager>();
             foreach (var x in db.Zones)
             {
+                if(string.IsNullOrEmpty(x.ImageSrc)) continue;
                 zones.Add(new ImagePager
                 {
                     Image = x.ImageSrc,
@@ -105,7 +106,7 @@ namespace DiscordHackWeek.Modules
         }
 
         [Name("Profile")]
-        [Description("")]
+        [Description("Display your, or a friends profile!")]
         [Command("Profile")]
         public async Task ProfileAsync(SocketGuildUser user = null)
         {
@@ -120,7 +121,7 @@ namespace DiscordHackWeek.Modules
         }
 
         [Name("Inventory")]
-        [Description("")]
+        [Description("Displays your profile")]
         [Command("inventory", "inv")]
         public async Task InventoryAsync()
         {
@@ -148,7 +149,7 @@ namespace DiscordHackWeek.Modules
                 return;
             }
 
-            await PagedReplyAsync(result.PaginateBuilder(Context.Guild, $"Inventory for {Context.User}", null));
+            await PagedReplyAsync(result.PaginateBuilder(Context.User, $"Inventory for {Context.User}", null));
         }
     }
 }
