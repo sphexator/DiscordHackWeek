@@ -9,6 +9,8 @@ Discord Hack Week Bot using Discord.NET and Qmmands
 ## Usage
 Prefix: -
 
+[Invite Link](https://discordapp.com/api/oauth2/authorize?client_id=592792635320827943&permissions=51200&scope=bot)
+
 |    Command    |  Description  |
 | ------------- | ------------- |
 | search | Searches and engages in combat with monsters in current zone |
