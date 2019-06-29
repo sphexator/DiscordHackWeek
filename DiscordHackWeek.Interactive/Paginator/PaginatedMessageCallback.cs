@@ -150,7 +150,7 @@ namespace DiscordHackWeek.Interactive.Paginator
                 embed.WithDescription(index.Content);
                 embed.WithImageUrl(index.Image);
             }
-            else embed.WithFooter(f => f.Text = string.Format(options.FooterFormat, page, pages));
+            else embed.WithDescription(_pager.Pages.ElementAt(page - 1).ToString());
             embed.WithFooter(f => f.Text = string.Format(options.FooterFormat, page, pages));
             embed.WithTitle(_pager.Title);
             return embed.Build();
